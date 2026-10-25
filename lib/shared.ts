@@ -1,16 +1,9 @@
 import { createGetUrl } from 'fumadocs-core/source';
 
-export const appName = 'My App';
+export const appName = 'Vue 与 React · 对照笔记';
 export const docsRoute = '/docs';
 export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
-
-// fill this with your actual GitHub info, for example:
-export const gitConfig = {
-  user: 'fuma-nama',
-  repo: 'fumadocs',
-  branch: 'main',
-};
 
 const getContentUrl = createGetUrl(docsContentRoute);
 
