@@ -15,27 +15,34 @@ Vue 修改响应式容器中的当前值；React setter 提交更新意图，当
 
 ```vue title="Counter.vue"
 <script setup lang="ts">
-import { ref } from 'vue'
-const count = ref(0)
+import { ref } from "vue";
+const count = ref(0);
 function addThree() {
-  count.value++
-  count.value++
-  count.value++
-  console.log(count.value) // 新值，DOM 可能等待下一轮更新
+  count.value++;
+  count.value++;
+  count.value++;
+  console.log(count.value); // 新值，DOM 可能等待下一轮更新
 }
 </script>
-<template><button @click="addThree">{{ count }}</button></template>
+<template>
+  <button @click="addThree">{{ count }}</button>
+</template>
 ```
 
 </CodeBlockTab>
 <CodeBlockTab value="react">
 
-<include lang="tsx" meta='title="basics.tsx"'>../../components/examples/basics.tsx#snapshot</include>
+<include lang="tsx" meta='title="basics.tsx"'>
+  ../../components/examples/basics.tsx#snapshot
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E02" title="连续加三与状态快照">先点直接更新：三个 count + 1 基于同一快照，只增加 1。再点函数式更新：三个转换按队列处理，增加 3。setter 不改写本次事件捕获的值。</Demo>
+<Demo id="E02" title="连续加三与状态快照">
+  先点直接更新：三个 count + 1 基于同一快照，只增加 1。再点函数式更新：三个转换按队列处理，增加
+  3。setter 不改写本次事件捕获的值。
+</Demo>
 
 React 批处理多次更新。函数式更新接收队列前一步的值，应保持纯净，不在里面发送请求或修改其他状态。开发 Strict Mode 可能重复调用更新函数检查纯净性。
 
@@ -51,17 +58,19 @@ React 批处理多次更新。函数式更新接收队列前一步的值，应�
 
 ```vue title="Cart.vue"
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref } from "vue";
 const items = ref([
-  { id: 1, name: '笔记本', price: 20, quantity: 1 },
-  { id: 2, name: '钢笔', price: 10, quantity: 2 },
-])
-const total = computed(() => items.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
+  { id: 1, name: "笔记本", price: 20, quantity: 1 },
+  { id: 2, name: "钢笔", price: 10, quantity: 2 },
+]);
+const total = computed(() =>
+  items.value.reduce((sum, item) => sum + item.price * item.quantity, 0),
+);
 </script>
 <template>
   <div v-for="item in items" :key="item.id">
     {{ item.name }}<input v-model.number="item.quantity" type="number" min="0" max="99" />
-    <button @click="items = items.filter(row => row.id !== item.id)">移除</button>
+    <button @click="items = items.filter((row) => row.id !== item.id)">移除</button>
   </div>
   <p>总价：¥{{ total }}</p>
 </template>
@@ -70,12 +79,16 @@ const total = computed(() => items.value.reduce((sum, item) => sum + item.price 
 </CodeBlockTab>
 <CodeBlockTab value="react">
 
-<include lang="tsx" meta='title="basics.tsx"'>../../components/examples/basics.tsx#cart</include>
+<include lang="tsx" meta='title="basics.tsx"'>
+  ../../components/examples/basics.tsx#cart
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E03" title="购物车与派生总价">修改数量、删除商品，总价始终来自当前列表，没有用于同步总价的 Effect。</Demo>
+<Demo id="E03" title="购物车与派生总价">
+  修改数量、删除商品，总价始终来自当前列表，没有用于同步总价的 Effect。
+</Demo>
 
 computed 自动追踪计算期间读取的响应式依赖，通常惰性求值并缓存。React 简单 reduce 直接在渲染中执行即可；有昂贵成本时再考虑 `useMemo(() => calculate(items), [items])`。useMemo 不自动追踪属性，也不能用于保证程序正确性。见 [E18](/docs/11-rendering#昂贵计算与记忆化)。
 
@@ -87,11 +100,11 @@ Vue reactive 是代理，修改被追踪的属性可触发相关更新；ref 包
 
 ```ts title="同一需求的更新形状"
 // Vue：profile 是 reactive({ name: '小林', tags: ['Vue'] })
-profile.name = '小周'
-profile.tags.push('React')
+profile.name = "小周";
+profile.tags.push("React");
 // React：profile 来自 useState
-setProfile(previous => ({ ...previous, name: '小周' }))
-setProfile(previous => ({ ...previous, tags: [...previous.tags, 'React'] }))
+setProfile((previous) => ({ ...previous, name: "小周" }));
+setProfile((previous) => ({ ...previous, tags: [...previous.tags, "React"] }));
 ```
 
 展开运算符只是浅复制。修改嵌套字段时要复制从根到修改字段的各层；数组用 map/filter 等返回新数组的方法。不要先 sort/splice 原状态再把同一个引用传回。
@@ -100,23 +113,32 @@ setProfile(previous => ({ ...previous, tags: [...previous.tags, 'React'] }))
 
 Vue setup 通常每实例执行一次，定时器 ID 可放在 setup 作用域普通变量；React 函数组件随渲染再次运行，函数内普通局部变量不能跨渲染保存。useRef 在同一实例中保留容器，改 current 不请求渲染。
 
-<include lang="tsx" meta='title="对象更新与定时器 ID"'>../../components/examples/basics.tsx#reference</include>
+<include lang="tsx" meta='title="对象更新与定时器 ID"'>
+  ../../components/examples/basics.tsx#reference
+</include>
 
-<Demo id="E04" title="对象更新与可变引用">多次点“仅修改 ref”，界面不变；点“读取 ref 并展示”，把读取结果保存到状态。安排任务后点取消，使用保存的 timer ID 清理。</Demo>
+<Demo id="E04" title="对象更新与可变引用">
+  多次点“仅修改 ref”，界面不变；点“读取 ref
+  并展示”，把读取结果保存到状态。安排任务后点取消，使用保存的 timer ID 清理。
+</Demo>
 
 ```vue title="Vue 定时器与引用"
 <script setup lang="ts">
-import { onUnmounted, reactive, toRefs } from 'vue'
-const profile = reactive({ name: '小林', tags: ['Vue'] })
-const { name } = toRefs(profile)
-let timer: ReturnType<typeof setTimeout> | undefined
+import { onUnmounted, reactive, toRefs } from "vue";
+const profile = reactive({ name: "小林", tags: ["Vue"] });
+const { name } = toRefs(profile);
+let timer: ReturnType<typeof setTimeout> | undefined;
 function schedule() {
-  clearTimeout(timer)
-  timer = setTimeout(() => { name.value = '小周' }, 1000)
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    name.value = "小周";
+  }, 1000);
 }
-onUnmounted(() => clearTimeout(timer))
+onUnmounted(() => clearTimeout(timer));
 </script>
-<template><button @click="schedule">{{ name }}</button></template>
+<template>
+  <button @click="schedule">{{ name }}</button>
+</template>
 ```
 
 需要显示的值放 state；不要在渲染期间读写 ref 绕过数据流。ref 适合在事件或 Effect 中保存 DOM、ID 和最新已提交值。
@@ -128,18 +150,20 @@ Vue `const { name } = reactiveObject` 对普通基本类型属性取得当前值
 React 每次解构 useState 结果得到该次快照。多个字段间有约束时，可用 reducer 集中转换：
 
 ```tsx title="集中转换"
-import { useReducer } from 'react'
-type State = { quantity: number; coupon: boolean }
-type Action = { type: 'add' } | { type: 'reset' }
+import { useReducer } from "react";
+type State = { quantity: number; coupon: boolean };
+type Action = { type: "add" } | { type: "reset" };
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'add': return { ...state, quantity: state.quantity + 1 }
-    case 'reset': return { quantity: 0, coupon: false }
+    case "add":
+      return { ...state, quantity: state.quantity + 1 };
+    case "reset":
+      return { quantity: 0, coupon: false };
   }
 }
 function CartActions() {
-  const [state, dispatch] = useReducer(reducer, { quantity: 0, coupon: false })
-  return <button onClick={() => dispatch({ type: 'add' })}>{state.quantity}</button>
+  const [state, dispatch] = useReducer(reducer, { quantity: 0, coupon: false });
+  return <button onClick={() => dispatch({ type: "add" })}>{state.quantity}</button>;
 }
 ```
 

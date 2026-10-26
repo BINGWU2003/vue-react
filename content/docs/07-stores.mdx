@@ -24,29 +24,34 @@ Pinia 代码采用 3.x Setup Store，Vue 应用入口先 `app.use(createPinia())
 <CodeBlockTab value="vue">
 
 ```ts title="stores/cart.ts"
-import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
-export const useCart = defineStore('cart', () => {
-  const quantities = ref({ notebook: 1, pen: 2 })
-  const total = computed(() => quantities.value.notebook * 20 + quantities.value.pen * 10)
-  function add(id: 'notebook' | 'pen') { quantities.value[id]++ }
-  function reset() { quantities.value = { notebook: 1, pen: 2 } }
-  return { quantities, total, add, reset }
-})
+import { computed, ref } from "vue";
+import { defineStore } from "pinia";
+export const useCart = defineStore("cart", () => {
+  const quantities = ref({ notebook: 1, pen: 2 });
+  const total = computed(() => quantities.value.notebook * 20 + quantities.value.pen * 10);
+  function add(id: "notebook" | "pen") {
+    quantities.value[id]++;
+  }
+  function reset() {
+    quantities.value = { notebook: 1, pen: 2 };
+  }
+  return { quantities, total, add, reset };
+});
 ```
 
 ```vue title="Cart.vue"
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { useCart } from './stores/cart'
-const cart = useCart()
-const { quantities, total } = storeToRefs(cart)
-const { add, reset } = cart
+import { storeToRefs } from "pinia";
+import { useCart } from "./stores/cart";
+const cart = useCart();
+const { quantities, total } = storeToRefs(cart);
+const { add, reset } = cart;
 </script>
 <template>
   <button @click="add('notebook')">笔记本：{{ quantities.notebook }}</button>
   <button @click="add('pen')">钢笔：{{ quantities.pen }}</button>
-  <p>总价：¥{{ total }}</p><button @click="reset">重置</button>
+  <p>总价：¥{{ total }}</p>
+  <button @click="reset">重置</button>
 </template>
 ```
 
@@ -54,18 +59,23 @@ const { add, reset } = cart
 <CodeBlockTab value="react">
 
 ```tsx title="store.tsx · 导入"
-import { useEffect, useRef, useState } from 'react'
-import { createStore, type StoreApi } from 'zustand/vanilla'
-import { useStore } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { useEffect, useRef, useState } from "react";
+import { createStore, type StoreApi } from "zustand/vanilla";
+import { useStore } from "zustand";
+import { persist } from "zustand/middleware";
 ```
 
-<include lang="tsx" meta='title="store.tsx · 实际演示源码"'>../../components/examples/store.tsx#store</include>
+<include lang="tsx" meta='title="store.tsx · 实际演示源码"'>
+  ../../components/examples/store.tsx#store
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E10" title="共享购物车与 selector">增加笔记本、再增加钢笔。观察两个商品消费者各自提交后的 Effect 次数，以及汇总金额。切换持久化偏好再重置演示，偏好被重新读取；点击清除偏好恢复默认。</Demo>
+<Demo id="E10" title="共享购物车与 selector">
+  增加笔记本、再增加钢笔。观察两个商品消费者各自提交后的 Effect
+  次数，以及汇总金额。切换持久化偏好再重置演示，偏好被重新读取；点击清除偏好恢复默认。
+</Demo>
 
 ## 更新方式与派生值
 
@@ -78,12 +88,14 @@ Zustand 的 set 默认浅合并顶层字段，不会替你复制嵌套对象。E
 Pinia 依赖响应式读取，storeToRefs 保留状态和 getter 的连接，action 可直接解构。Zustand 5 的 selector 结果需要稳定；单个数字或 action 引用容易保持稳定，下面这种每次创建对象的写法要小心：
 
 ```tsx title="多值 selector · Zustand 5"
-import { useShallow } from 'zustand/react/shallow'
+import { useShallow } from "zustand/react/shallow";
 // 对 create(...) 返回的 useCartStore：
-const { notebook, pen } = useCartStore(useShallow(state => ({
-  notebook: state.quantities.notebook,
-  pen: state.quantities.pen,
-})))
+const { notebook, pen } = useCartStore(
+  useShallow((state) => ({
+    notebook: state.quantities.notebook,
+    pen: state.quantities.pen,
+  })),
+);
 ```
 
 不要把 Pinia 的属性追踪机制迁移成“Zustand 会自动知道我读了哪个属性”。普通 useContext 消费者也没有自动的属性级 selector。
@@ -93,10 +105,10 @@ const { notebook, pen } = useCartStore(useShallow(state => ({
 Zustand `store.getState()` 读取那一刻的状态，不让调用方自动订阅；`store.subscribe(listener)` 返回取消订阅函数。Pinia `$subscribe` 观察变更，`$onAction` 可观察 action；其 scope 和 detached 行为要按使用位置决定。组件外使用 Pinia 时应确保正确的活动 Pinia 实例，不要依赖尚未初始化的全局环境。
 
 ```ts title="读取一次与持续订阅"
-const snapshot = store.getState()
+const snapshot = store.getState();
 const unsubscribe = store.subscribe((next, previous) => {
-  console.log(previous.quantities, next.quantities)
-})
+  console.log(previous.quantities, next.quantities);
+});
 // 在拥有者生命周期结束时调用 unsubscribe()
 ```
 
@@ -108,10 +120,18 @@ Pinia 核心不默认提供浏览器持久化，可以选择插件或显式实�
 
 ```ts title="Pinia：显式持久化思路"
 // preferences 是含 compact 字段的 store，仅在客户端执行。
-try { preferences.compact = localStorage.getItem('demo-compact-v1') === 'true' } catch { /* 保留默认 */ }
+try {
+  preferences.compact = localStorage.getItem("demo-compact-v1") === "true";
+} catch {
+  /* 保留默认 */
+}
 const stop = preferences.$subscribe((_mutation, state) => {
-  try { localStorage.setItem('demo-compact-v1', String(state.compact)) } catch { /* 不影响交互 */ }
-})
+  try {
+    localStorage.setItem("demo-compact-v1", String(state.compact));
+  } catch {
+    /* 不影响交互 */
+  }
+});
 // 拥有者结束时 stop()；重置时同时恢复内存并移除该键。
 ```
 

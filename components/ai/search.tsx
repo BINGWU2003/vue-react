@@ -1,10 +1,10 @@
-'use client';
-import type { ReactNode } from 'react';
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, type InferUITool, type Tool, type UIMessage } from 'ai';
-import { type AIChatClientData, AIChatProvider, AIChatSearch } from './chat';
+"use client";
+import type { ReactNode } from "react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport, type InferUITool, type Tool, type UIMessage } from "ai";
+import { type AIChatClientData, AIChatProvider, AIChatSearch } from "./chat";
 
-export { AIChatPanel, AIChatTrigger, useAIChat } from './chat';
+export { AIChatPanel, AIChatTrigger, useAIChat } from "./chat";
 
 export type SearchTool = Tool<
   { query: string; limit: number },
@@ -19,10 +19,10 @@ export type ChatUIMessage = UIMessage<
 
 export function AIChat({ children }: { children: ReactNode }) {
   const chat = useChat<ChatUIMessage>({
-    id: 'search',
+    id: "search",
     throttle: 40,
     transport: new DefaultChatTransport({
-      api: '/api/chat',
+      api: "/api/chat",
     }),
   });
 
@@ -33,6 +33,6 @@ export function AIChat({ children }: { children: ReactNode }) {
   );
 }
 
-function renderPart(part: ChatUIMessage['parts'][number], live: boolean) {
-  if (part.type === 'tool-search') return <AIChatSearch part={part} live={live} />;
+function renderPart(part: ChatUIMessage["parts"][number], live: boolean) {
+  if (part.type === "tool-search") return <AIChatSearch part={part} live={live} />;
 }

@@ -13,22 +13,22 @@ description: 做一个可筛选的待办列表，理解表达式、条件、列�
 
 ```vue title="TodoList.vue"
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-type Todo = { id: number; text: string; done: boolean }
+import { computed, ref } from "vue";
+type Todo = { id: number; text: string; done: boolean };
 const todos = ref<Todo[]>([
-  { id: 1, text: '理解 JSX', done: false },
-  { id: 2, text: '建立状态快照模型', done: true },
-])
-let nextId = 3
-const text = ref('')
-const filter = ref('all')
-const shown = computed(() => todos.value.filter(
-  todo => filter.value === 'all' || todo.done === (filter.value === 'done')
-))
+  { id: 1, text: "理解 JSX", done: false },
+  { id: 2, text: "建立状态快照模型", done: true },
+]);
+let nextId = 3;
+const text = ref("");
+const filter = ref("all");
+const shown = computed(() =>
+  todos.value.filter((todo) => filter.value === "all" || todo.done === (filter.value === "done")),
+);
 function add() {
-  if (!text.value.trim()) return
-  todos.value.push({ id: nextId++, text: text.value.trim(), done: false })
-  text.value = ''
+  if (!text.value.trim()) return;
+  todos.value.push({ id: nextId++, text: text.value.trim(), done: false });
+  text.value = "";
 }
 </script>
 <template>
@@ -36,15 +36,20 @@ function add() {
     <input v-model="text" aria-label="待办内容" /><button>新增</button>
   </form>
   <select v-model="filter" aria-label="筛选">
-    <option value="all">全部</option><option value="done">已完成</option>
+    <option value="all">全部</option>
+    <option value="done">已完成</option>
     <option value="active">未完成</option>
   </select>
   <button @click="todos.reverse()">反转顺序</button>
-  <ul><li v-for="todo in shown" :key="todo.id">
-    <input v-model="todo.done" type="checkbox" />
-    <span :style="{ textDecoration: todo.done ? 'line-through' : undefined }">{{ todo.text }}</span>
-    <button @click="todos = todos.filter(item => item.id !== todo.id)">删除</button>
-  </li></ul>
+  <ul>
+    <li v-for="todo in shown" :key="todo.id">
+      <input v-model="todo.done" type="checkbox" />
+      <span :style="{ textDecoration: todo.done ? 'line-through' : undefined }">{{
+        todo.text
+      }}</span>
+      <button @click="todos = todos.filter((item) => item.id !== todo.id)">删除</button>
+    </li>
+  </ul>
 </template>
 ```
 
@@ -52,34 +57,39 @@ function add() {
 <CodeBlockTab value="react">
 
 ```tsx title="basics.tsx · 导入"
-import { useRef, useState } from 'react'
+import { useRef, useState } from "react";
 ```
 
-<include lang="tsx" meta='title="basics.tsx · 实际演示源码"'>../../components/examples/basics.tsx#todo</include>
+<include lang="tsx" meta='title="basics.tsx · 实际演示源码"'>
+  ../../components/examples/basics.tsx#todo
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
 <Demo id="E01" title="待办列表与条件显示">
-  新增待办，切换完成并筛选。编辑草稿后用 CSS 隐藏再显示，内容保留；勾选“隐藏时卸载”，重新输入草稿，再隐藏和显示，内容恢复初始值。切换演示模式本身也会改变组件所在分支。
+  新增待办，切换完成并筛选。编辑草稿后用 CSS
+  隐藏再显示，内容保留；勾选“隐藏时卸载”，重新输入草稿，再隐藏和显示，内容恢复初始值。切换演示模式本身也会改变组件所在分支。
 </Demo>
 
 Vue 侧的隐藏实验可拆为 `Draft.vue` 与父级，两端复用相同初值：
 
 ```vue title="Draft.vue"
 <script setup lang="ts">
-import { ref } from 'vue'
-const value = ref('我会保留吗？')
+import { ref } from "vue";
+const value = ref("我会保留吗？");
 </script>
-<template><label>组件内部草稿 <input v-model="value" /></label></template>
+<template>
+  <label>组件内部草稿 <input v-model="value" /></label>
+</template>
 ```
 
 ```vue title="Visibility.vue"
 <script setup lang="ts">
-import { ref } from 'vue'
-import Draft from './Draft.vue'
-const visible = ref(true)
-const unmount = ref(false)
+import { ref } from "vue";
+import Draft from "./Draft.vue";
+const visible = ref(true);
+const unmount = ref(false);
 </script>
 <template>
   <button @click="visible = !visible">隐藏 / 显示</button>
@@ -97,11 +107,11 @@ JSX 常用 `className`、`htmlFor`，`aria-*` 与 `data-*` 保留连字符。组
 
 ## 条件：隐藏还是卸载
 
-| 目标 | Vue | React |
-| --- | --- | --- |
-| 条件创建与销毁 | v-if / v-else | 三元表达式、返回 null |
-| 保留实例但隐藏 | v-show | display: none 或隐藏类名 |
-| 多分支页面 | 模板条件分支 | 提前返回、普通 JavaScript 分支 |
+| 目标           | Vue           | React                          |
+| -------------- | ------------- | ------------------------------ |
+| 条件创建与销毁 | v-if / v-else | 三元表达式、返回 null          |
+| 保留实例但隐藏 | v-show        | display: none 或隐藏类名       |
+| 多分支页面     | 模板条件分支  | 提前返回、普通 JavaScript 分支 |
 
 CSS 隐藏保留状态、DOM 和资源订阅；条件卸载会清理实例及其资源。相同位置、相同组件是否保留状态还取决于身份，见 [第 11 章](/docs/11-rendering)。不要用 `count && <Badge />` 判断正数，0 也会被渲染；使用 `count > 0 ? <Badge /> : null`。
 
@@ -119,10 +129,17 @@ v-model 背后也包含值与更新通知。React 受控文本输入用 value/on
 
 ```tsx title="非受控表单"
 function SearchForm() {
-  return <form onSubmit={event => {
-    event.preventDefault()
-    console.log(new FormData(event.currentTarget).get('q'))
-  }}><input name="q" defaultValue="笔记本" /><button>搜索</button></form>
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        console.log(new FormData(event.currentTarget).get("q"));
+      }}
+    >
+      <input name="q" defaultValue="笔记本" />
+      <button>搜索</button>
+    </form>
+  );
 }
 ```
 

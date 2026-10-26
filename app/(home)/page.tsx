@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { chapters } from '@/lib/chapters';
+import Link from "next/link";
+import { chapters } from "@/lib/chapters";
 
 export default function HomePage() {
   return (
@@ -20,7 +20,10 @@ export default function HomePage() {
           href="/docs"
           className="mt-8 inline-flex items-center rounded-lg bg-fd-primary px-5 py-3 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fd-ring"
         >
-          开始阅读 <span aria-hidden="true" className="ml-2">→</span>
+          开始阅读{" "}
+          <span aria-hidden="true" className="ml-2">
+            →
+          </span>
         </Link>
       </div>
 
@@ -31,16 +34,17 @@ export default function HomePage() {
             href={`/docs/${section.slug}`}
             className="rounded-xl border bg-fd-card p-6 transition-colors hover:bg-fd-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fd-ring"
           >
-            <p className="mb-3 font-mono text-xs text-fd-muted-foreground">{String(index + 1).padStart(2, '0')} / {section.group}</p>
-            <h2 className="font-medium">{section.title}</h2>
-            <p className="mt-3 text-sm leading-7 text-fd-muted-foreground">
-              {section.description}
+            <p className="mb-3 font-mono text-xs text-fd-muted-foreground">
+              {String(index + 1).padStart(2, "0")} / {section.group}
             </p>
+            <h2 className="font-medium">{section.title}</h2>
+            <p className="mt-3 text-sm leading-7 text-fd-muted-foreground">{section.description}</p>
           </Link>
         ))}
       </section>
       <p className="mt-8 text-sm leading-6 text-fd-muted-foreground">
-        11 章对照正文 · 可重置的 React 演示 · 可缩放流程图。Vue 展示代码；部分第三方库示例提供独立运行说明。
+        11 章对照正文 · 可重置的 React 演示 · 可缩放流程图。Vue
+        展示代码；部分第三方库示例提供独立运行说明。
       </p>
     </main>
   );

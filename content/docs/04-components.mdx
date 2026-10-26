@@ -19,26 +19,32 @@ props 表达输入。Vue props 是浅只读约定，React 也要求把 props 当
 
 ```vue title="SearchInput.vue · Vue 3.4+"
 <script setup lang="ts">
-import { ref } from 'vue'
-const model = defineModel<string>({ required: true })
-const input = ref<HTMLInputElement | null>(null)
-defineExpose({ focus: () => input.value?.focus() })
+import { ref } from "vue";
+const model = defineModel<string>({ required: true });
+const input = ref<HTMLInputElement | null>(null);
+defineExpose({ focus: () => input.value?.focus() });
 </script>
-<template><label>商品搜索 <input ref="input" v-model="model" /></label></template>
+<template>
+  <label>商品搜索 <input ref="input" v-model="model" /></label>
+</template>
 ```
 
 ```vue title="App.vue"
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import SearchInput from './SearchInput.vue'
-const search = ref('')
-const input = ref<InstanceType<typeof SearchInput> | null>(null)
-const shown = computed(() => ['笔记本', '钢笔', '背包'].filter(name => name.includes(search.value)))
+import { computed, ref } from "vue";
+import SearchInput from "./SearchInput.vue";
+const search = ref("");
+const input = ref<InstanceType<typeof SearchInput> | null>(null);
+const shown = computed(() =>
+  ["笔记本", "钢笔", "背包"].filter((name) => name.includes(search.value)),
+);
 </script>
 <template>
   <SearchInput ref="input" v-model="search" />
   <button @click="input?.focus()">父组件聚焦</button>
-  <ul><li v-for="name in shown" :key="name">{{ name }}</li></ul>
+  <ul>
+    <li v-for="name in shown" :key="name">{{ name }}</li>
+  </ul>
 </template>
 ```
 
@@ -46,43 +52,60 @@ const shown = computed(() => ['笔记本', '钢笔', '背包'].filter(name => na
 <CodeBlockTab value="react">
 
 ```tsx title="communication.tsx · 导入"
-import { createContext, useContext, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react'
+import {
+  createContext,
+  useContext,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type ReactNode,
+  type Ref,
+} from "react";
 ```
 
-<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>../../components/examples/communication.tsx#communication</include>
+<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>
+  ../../components/examples/communication.tsx#communication
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E07" title="可控搜索、内容组合与聚焦">输入关键词，观察父级值与列表一起变化；点击父组件聚焦，焦点回到输入框。切换局部主题，嵌套消费者读取同一 Context。</Demo>
+<Demo id="E07" title="可控搜索、内容组合与聚焦">
+  输入关键词，观察父级值与列表一起变化；点击父组件聚焦，焦点回到输入框。切换局部主题，嵌套消费者读取同一
+  Context。
+</Demo>
 
 defineModel 可理解为 modelValue prop 与 update:modelValue 通知的组合；传统写法用 defineProps/defineEmits。React 没有固定 v-model 语法，用 value/onChange 或业务名表达同一所有权。
 
 ```vue title="Vue：显式值与通知"
 <script setup lang="ts">
-defineProps<{ value: string }>()
-const emit = defineEmits<{ change: [value: string] }>()
+defineProps<{ value: string }>();
+const emit = defineEmits<{ change: [value: string] }>();
 </script>
-<template><input :value="value" @input="emit('change', ($event.target as HTMLInputElement).value)" /></template>
+<template>
+  <input :value="value" @input="emit('change', ($event.target as HTMLInputElement).value)" />
+</template>
 ```
 
 React 19 函数组件可直接接收 ref prop；历史 React 18 代码通常用 forwardRef。useImperativeHandle 只暴露 focus 等必要方法，避免父级随意修改内部 DOM。不要用 ref 替代本可由 props 表达的数据同步。
 
 ## 默认、具名和作用域内容
 
-| Vue | React 常用接口 | 作用 |
-| --- | --- | --- |
-| 默认插槽 | children | 传入一段内容 |
-| 具名插槽 | header、footer 等内容 props | 为多个区域传入内容 |
-| 作用域插槽 | renderItem 等函数 props | 子组件把数据交给调用方决定显示 |
+| Vue        | React 常用接口              | 作用                           |
+| ---------- | --------------------------- | ------------------------------ |
+| 默认插槽   | children                    | 传入一段内容                   |
+| 具名插槽   | header、footer 等内容 props | 为多个区域传入内容             |
+| 作用域插槽 | renderItem 等函数 props     | 子组件把数据交给调用方决定显示 |
 
 ```vue title="ContentList.vue"
 <script setup lang="ts">
-defineProps<{ items: string[] }>()
+defineProps<{ items: string[] }>();
 </script>
 <template>
   <header><slot name="header" /></header>
-  <ul><li v-for="item in items" :key="item"><slot :item="item" /></li></ul>
+  <ul>
+    <li v-for="item in items" :key="item"><slot :item="item" /></li>
+  </ul>
 </template>
 ```
 
@@ -99,19 +122,23 @@ React ContentList 的 renderItem 已在 E07 展示。具名区域可以采用 `{
 
 ```vue title="Vue：主题提供者（后代在自己的组件中 inject）"
 <script setup lang="ts">
-import { provide, ref } from 'vue'
-const theme = ref('浅色')
-provide('theme', theme)
+import { provide, ref } from "vue";
+const theme = ref("浅色");
+provide("theme", theme);
 </script>
-<template><button @click="theme = theme === '浅色' ? '深色' : '浅色'">切换</button><slot /></template>
+<template>
+  <button @click="theme = theme === '浅色' ? '深色' : '浅色'">切换</button><slot />
+</template>
 ```
 
 ```vue title="ThemeBadge.vue"
 <script setup lang="ts">
-import { inject, type Ref } from 'vue'
-const theme = inject<Ref<string>>('theme')
+import { inject, type Ref } from "vue";
+const theme = inject<Ref<string>>("theme");
 </script>
-<template><p>{{ theme ?? '浅色' }}主题</p></template>
+<template>
+  <p>{{ theme ?? "浅色" }}主题</p>
+</template>
 ```
 
 provide 一个 ref 后，消费者读取其响应式值；提供普通静态字符串不会自动变成响应式。大型项目可用带类型的 InjectionKey 避免字符串冲突。

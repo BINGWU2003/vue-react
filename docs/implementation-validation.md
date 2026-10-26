@@ -13,15 +13,15 @@
 
 ## 自动检查
 
-| 检查 | 结果 |
-| --- | --- |
-| pnpm lint | 退出码 0；保留原项目 4 条警告，新增代码无 lint 警告 |
-| pnpm types:check | 通过 |
-| pnpm build | 通过，生成 44 个静态页面/内容端点 |
-| pnpm test:e2e | 12/12 通过，无页面运行时错误 |
-| git diff --check | 通过 |
+| 检查                | 结果                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| pnpm lint           | 退出码 0；保留原项目 4 条警告，新增代码无 lint 警告                                                     |
+| pnpm types:check    | 通过                                                                                                    |
+| pnpm build          | 通过，生成 44 个静态页面/内容端点                                                                       |
+| pnpm test:e2e       | 12/12 通过，无页面运行时错误                                                                            |
+| git diff --check    | 通过                                                                                                    |
 | 独立代码 TypeScript | Vue Router、React Router、TanStack Router 入口，以及 Ant Design 组件与 CSS Modules 声明通过严格类型检查 |
-| Vue 编译器语法检查 | 26 段 SFC / 组件使用片段通过；单独的模板使用片段在 template 容器中检查 |
+| Vue 编译器语法检查  | 26 段 SFC / 组件使用片段通过；单独的模板使用片段在 template 容器中检查                                  |
 
 独立 TypeScript 检查在临时目录中安装 Vue 3.5.44、Vue Router 4.6.4、React Router 7.18.1、TanStack Router 1.170.46、Ant Design 6.6.7、React 19.3.1、TypeScript 7.0.2，不为本站增加这些展示用运行时。此项不等于三方应用全部完成浏览器端到端验证；运行与观察步骤见路由章。
 

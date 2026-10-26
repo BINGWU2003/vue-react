@@ -1,7 +1,7 @@
-import defaultMdxComponents from 'fumadocs-ui/mdx';
-import type { MDXComponents } from 'mdx/types';
-import { Demo, CodeOnly } from './learning/demo';
-import { Diagram } from './learning/diagram';
+import defaultMdxComponents from "fumadocs-ui/mdx";
+import type { MDXComponents } from "mdx/types";
+import { Demo, CodeOnly } from "./learning/demo";
+import { Diagram } from "./learning/diagram";
 
 export function getMDXComponents(components?: MDXComponents) {
   return {

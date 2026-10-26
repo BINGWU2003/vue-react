@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type ComponentProps,
@@ -9,9 +9,9 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { Tabs as Primitive } from '@base-ui/react/tabs';
-import { mergeRefs } from '../../lib/merge-refs';
+} from "react";
+import { Tabs as Primitive } from "@base-ui/react/tabs";
+import { mergeRefs } from "../../lib/merge-refs";
 
 type ChangeListener = (v: string) => void;
 const listeners = new Map<string, Set<ChangeListener>>();
@@ -52,7 +52,7 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = use(TabsContext);
-  if (!ctx) throw new Error('You must wrap your component in <Tabs>');
+  if (!ctx) throw new Error("You must wrap your component in <Tabs>");
   return ctx;
 }
 
@@ -141,8 +141,8 @@ export function Tabs({
 
   useLayoutEffect(() => {
     openFromHash();
-    window.addEventListener('hashchange', openFromHash);
-    return () => window.removeEventListener('hashchange', openFromHash);
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
   }, []);
 
   return (
@@ -154,7 +154,7 @@ export function Tabs({
           const id = valueToIdMap.get(v);
 
           if (id) {
-            window.history.replaceState(null, '', `#${id}`);
+            window.history.replaceState(null, "", `#${id}`);
           }
         }
 

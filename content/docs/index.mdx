@@ -10,53 +10,76 @@ description: 从同一个需求出发，理解写法、运行机制与容易误�
 先完成 **01—05** 的基础用法，再用 **06—10** 组织日常项目，最后通过 **11** 回看更新机制。代码标签支持 Vue / React 切换；React 演示可直接操作和重置。流程图可点击全屏、拖动和缩放，按 Escape 返回原阅读位置。
 
 <Callout title="演示约定">
-  本站启用 React Strict Mode。开发环境组件执行和 Effect setup/cleanup 可能额外出现；生产行为与开发检查分别观察。部分第三方库标注“代码示例”，提供依赖与独立运行说明。
+  本站启用 React Strict Mode。开发环境组件执行和 Effect setup/cleanup
+  可能额外出现；生产行为与开发检查分别观察。部分第三方库标注“代码示例”，提供依赖与独立运行说明。
 </Callout>
 
 ## 阅读目录
 
 <Cards>
-  <Card title="01 · 模板与 JSX" href="/docs/01-template-jsx">界面、条件、列表、事件和表单。</Card>
-  <Card title="02 · 状态与派生数据" href="/docs/02-state">状态快照、更新队列、计算与引用。</Card>
-  <Card title="03 · 副作用与生命周期" href="/docs/03-effects">同步外部系统、依赖和清理。</Card>
-  <Card title="04 · 组件设计与通信" href="/docs/04-components">props、通知、内容组合与 ref。</Card>
-  <Card title="05 · Composables 与 Hooks" href="/docs/05-hooks">执行模型、资源管理和共享边界。</Card>
-  <Card title="06 · 路由" href="/docs/06-routing">Vue Router、React Router、TanStack Router。</Card>
-  <Card title="07 · 状态管理" href="/docs/07-stores">状态归属、Pinia 与 Zustand。</Card>
-  <Card title="08 · React 请求管理" href="/docs/08-requests">请求、竞态、缓存、失效和乐观更新。</Card>
-  <Card title="09 · CSS 与样式组织" href="/docs/09-styling">作用域、动态样式和主题。</Card>
-  <Card title="10 · 修改组件库样式" href="/docs/10-library-styles">Element Plus 与 Ant Design 样式入口。</Card>
-  <Card title="11 · 更新机制与正确性" href="/docs/11-rendering">身份、执行、提交和性能观察。</Card>
+  <Card title="01 · 模板与 JSX" href="/docs/01-template-jsx">
+    界面、条件、列表、事件和表单。
+  </Card>
+  <Card title="02 · 状态与派生数据" href="/docs/02-state">
+    状态快照、更新队列、计算与引用。
+  </Card>
+  <Card title="03 · 副作用与生命周期" href="/docs/03-effects">
+    同步外部系统、依赖和清理。
+  </Card>
+  <Card title="04 · 组件设计与通信" href="/docs/04-components">
+    props、通知、内容组合与 ref。
+  </Card>
+  <Card title="05 · Composables 与 Hooks" href="/docs/05-hooks">
+    执行模型、资源管理和共享边界。
+  </Card>
+  <Card title="06 · 路由" href="/docs/06-routing">
+    Vue Router、React Router、TanStack Router。
+  </Card>
+  <Card title="07 · 状态管理" href="/docs/07-stores">
+    状态归属、Pinia 与 Zustand。
+  </Card>
+  <Card title="08 · React 请求管理" href="/docs/08-requests">
+    请求、竞态、缓存、失效和乐观更新。
+  </Card>
+  <Card title="09 · CSS 与样式组织" href="/docs/09-styling">
+    作用域、动态样式和主题。
+  </Card>
+  <Card title="10 · 修改组件库样式" href="/docs/10-library-styles">
+    Element Plus 与 Ant Design 样式入口。
+  </Card>
+  <Card title="11 · 更新机制与正确性" href="/docs/11-rendering">
+    身份、执行、提交和性能观察。
+  </Card>
 </Cards>
 
 ## 技术与版本
 
-| 部分 | 本文前提 |
-| --- | --- |
-| Vue | Vue 3.5+、Composition API、SFC、script setup；3.5 特有行为单独标明 |
-| React | 本站 React 19.3.1；ref prop 从 React 19 起可用 |
-| 样式 | Tailwind CSS 4、CSS Modules、普通 CSS 与 CSS 变量 |
-| 可运行生态示例 | Zustand 5.0.16、TanStack React Query 5.104.5 |
-| 代码示例生态 | Vue Router 4.6.4、React Router 7.18.1 Data Mode、TanStack Router 1.170.46、Pinia 3.0.4、Axios 1.20.0、Element Plus 2.x、Ant Design 6.6.7 |
+| 部分           | 本文前提                                                                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Vue            | Vue 3.5+、Composition API、SFC、script setup；3.5 特有行为单独标明                                                                       |
+| React          | 本站 React 19.3.1；ref prop 从 React 19 起可用                                                                                           |
+| 样式           | Tailwind CSS 4、CSS Modules、普通 CSS 与 CSS 变量                                                                                        |
+| 可运行生态示例 | Zustand 5.0.16、TanStack React Query 5.104.5                                                                                             |
+| 代码示例生态   | Vue Router 4.6.4、React Router 7.18.1 Data Mode、TanStack Router 1.170.46、Pinia 3.0.4、Axios 1.20.0、Element Plus 2.x、Ant Design 6.6.7 |
 
 独立运行代码示例时安装对应主版本；它们不代表 npm 的全部最新版本。本站不安装 Vue 运行时，Vue 只展示代码。
 
 ## 概念速查
 
-| Vue 概念 | React 中可比较的内容 | 关键区别 |
-| --- | --- | --- |
-| ref / reactive | useState / useReducer | 响应式容器与快照、更新队列不同 |
-| 模板 ref | DOM ref / useRef | 与 Vue 数据 ref 分清用途 |
-| computed | 直接计算 / useMemo | 先直接计算，再按需优化 |
-| watch / watchEffect | Effect 或事件 | 先判断外部同步需求；React 不自动追踪属性 |
-| onMounted / onUnmounted | Effect setup / cleanup | 依赖变化也会清理重建 |
-| nextTick | 提交后读取 DOM | 没有适用于所有目的的直接替代 |
-| v-model | value / onChange | 都要明确数据所有权 |
-| 插槽 | children / 内容 props / render props | 具名内容与传出内部数据是不同接口 |
-| provide / inject | Context | 跨层传值能力相似，更新机制不同 |
-| Composable | 自定义 Hook | React Hook 随渲染执行，遵守调用顺序 |
-| Pinia | Zustand | 原地修改不能迁移成 Zustand 更新方式 |
-| Scoped CSS | CSS Modules 等 | 属性选择器与局部类名机制不同 |
+| Vue 概念                | React 中可比较的内容                 | 关键区别                                 |
+| ----------------------- | ------------------------------------ | ---------------------------------------- |
+| ref / reactive          | useState / useReducer                | 响应式容器与快照、更新队列不同           |
+| 模板 ref                | DOM ref / useRef                     | 与 Vue 数据 ref 分清用途                 |
+| computed                | 直接计算 / useMemo                   | 先直接计算，再按需优化                   |
+| watch / watchEffect     | Effect 或事件                        | 先判断外部同步需求；React 不自动追踪属性 |
+| onMounted / onUnmounted | Effect setup / cleanup               | 依赖变化也会清理重建                     |
+| nextTick                | 提交后读取 DOM                       | 没有适用于所有目的的直接替代             |
+| v-model                 | value / onChange                     | 都要明确数据所有权                       |
+| 插槽                    | children / 内容 props / render props | 具名内容与传出内部数据是不同接口         |
+| provide / inject        | Context                              | 跨层传值能力相似，更新机制不同           |
+| Composable              | 自定义 Hook                          | React Hook 随渲染执行，遵守调用顺序      |
+| Pinia                   | Zustand                              | 原地修改不能迁移成 Zustand 更新方式      |
+| Scoped CSS              | CSS Modules 等                       | 属性选择器与局部类名机制不同             |
 
 ## 示例与环境
 

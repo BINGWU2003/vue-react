@@ -7,7 +7,11 @@ description: 从官方主题和公开样式入口入手，排查局部覆盖、�
 
 整体主题使用绿色；某个按钮改为圆角胶囊；一处输入框加边框；某个下拉弹层局部改底色。组件库部分只讨论样式入口，不展开通用业务 API。
 
-<CodeOnly>Element Plus 采用 2.x、Ant Design 采用 6.x（语义接口对照 6.5 官方文档）。下列代码在各自独立项目中运行；安装 element-plus@2 或 antd@6，并使用其官方引入方式。本站用原生 dialog + 实际 Portal 展示共同的 CSS 继承问题。</CodeOnly>
+<CodeOnly>
+  Element Plus 采用 2.x、Ant Design 采用 6.x（语义接口对照 6.5
+  官方文档）。下列代码在各自独立项目中运行；安装 element-plus@2 或
+  antd@6，并使用其官方引入方式。本站用原生 dialog + 实际 Portal 展示共同的 CSS 继承问题。
+</CodeOnly>
 
 <Diagram id="F10" />
 
@@ -19,11 +23,11 @@ description: 从官方主题和公开样式入口入手，排查局部覆盖、�
 
 ```vue title="StyledControls.vue · Element Plus 2"
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ElButton, ElInput, ElOption, ElSelect } from 'element-plus'
-import 'element-plus/dist/index.css'
-const text = ref('')
-const selected = ref('notebook')
+import { ref } from "vue";
+import { ElButton, ElInput, ElOption, ElSelect } from "element-plus";
+import "element-plus/dist/index.css";
+const text = ref("");
+const selected = ref("notebook");
 </script>
 <template>
   <section class="theme-zone">
@@ -36,13 +40,22 @@ const selected = ref('notebook')
   </section>
 </template>
 <style scoped>
-.theme-zone { --el-color-primary: #568275; }
-.one-button { border-radius: 999px; }
-.one-input :deep(.el-input__wrapper) { box-shadow: 0 0 0 2px #568275 inset; }
+.theme-zone {
+  --el-color-primary: #568275;
+}
+.one-button {
+  border-radius: 999px;
+}
+.one-input :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 2px #568275 inset;
+}
 </style>
 <style>
 /* 弹层默认 Teleport 到 body，不依赖 .theme-zone 祖先。只命中此实例的公开类。 */
-.product-select-popup.el-select__popper { --el-color-primary: #568275; --el-bg-color-overlay: #f2f8f5; }
+.product-select-popup.el-select__popper {
+  --el-color-primary: #568275;
+  --el-bg-color-overlay: #f2f8f5;
+}
 </style>
 ```
 
@@ -52,31 +65,49 @@ CSS 变量适合运行时主题；项目级完整主题还需核对派生变量�
 <CodeBlockTab value="react">
 
 ```tsx title="StyledControls.tsx · Ant Design 6"
-import { Button, ConfigProvider, Input, Select } from 'antd'
-import styles from './controls.module.css'
+import { Button, ConfigProvider, Input, Select } from "antd";
+import styles from "./controls.module.css";
 export function StyledControls() {
-  return <ConfigProvider theme={{
-    token: { colorPrimary: '#568275', borderRadius: 8 },
-    components: { Button: { fontWeight: 600 } },
-  }}>
-    <section className={styles.zone}>
-      <Button type="primary">主题按钮</Button>
-      <Button type="primary" styles={{ root: { borderRadius: 999 } }}>仅这个按钮</Button>
-      <Input className={styles.oneInput} placeholder="局部输入框" />
-      <Select defaultValue="notebook" options={[{ value: 'notebook', label: '笔记本' }]}
-        classNames={{ popup: { root: styles.productPopup } }} />
-    </section>
-  </ConfigProvider>
+  return (
+    <ConfigProvider
+      theme={{
+        token: { colorPrimary: "#568275", borderRadius: 8 },
+        components: { Button: { fontWeight: 600 } },
+      }}
+    >
+      <section className={styles.zone}>
+        <Button type="primary">主题按钮</Button>
+        <Button type="primary" styles={{ root: { borderRadius: 999 } }}>
+          仅这个按钮
+        </Button>
+        <Input className={styles.oneInput} placeholder="局部输入框" />
+        <Select
+          defaultValue="notebook"
+          options={[{ value: "notebook", label: "笔记本" }]}
+          classNames={{ popup: { root: styles.productPopup } }}
+        />
+      </section>
+    </ConfigProvider>
+  );
 }
 ```
 
 ```css title="controls.module.css"
-.zone { display: grid; gap: 12px; }
-.oneInput { border-width: 2px; }
+.zone {
+  display: grid;
+  gap: 12px;
+}
+.oneInput {
+  border-width: 2px;
+}
 /* 通过公开 popup root 类直接限定，不要求弹层位于 zone 下。 */
-.productPopup { background: #f2f8f5; }
+.productPopup {
+  background: #f2f8f5;
+}
 /* 确需配合库类时，限制全局例外的外层范围。 */
-.zone :global(.ant-input:hover) { border-color: #568275; }
+.zone :global(.ant-input:hover) {
+  border-color: #568275;
+}
 ```
 
 styles/classNames 的语义键按组件和版本核对，不能把一个组件的 root/popup 名称复制到所有组件。Ant Design 5 教程中的旧属性不一定是 6.x 推荐入口。
@@ -93,19 +124,30 @@ React CSS Modules 的 :global 只是选择器编译例外，`.zone :global(.ant-
 ## 弹层真实 DOM 与 CSS 继承
 
 ```tsx title="styling.tsx · Portal 导入"
-import { createPortal } from 'react-dom'
-import { useId, useRef, useState, type CSSProperties } from 'react'
-import styles from './styling.module.css'
+import { createPortal } from "react-dom";
+import { useId, useRef, useState, type CSSProperties } from "react";
+import styles from "./styling.module.css";
 ```
 
-<include lang="tsx" meta='title="styling.tsx · 实际 Portal 演示"'>../../components/examples/styling.tsx#portal</include>
+<include lang="tsx" meta='title="styling.tsx · 实际 Portal 演示"'>
+  ../../components/examples/styling.tsx#portal
+</include>
 
 ```css title="styling.module.css · 弹层规则"
-.portalSurface { border: 3px solid var(--example-accent, #db8050); padding: 24px;
-  border-radius: 14px; background: var(--color-fd-background); color: var(--color-fd-foreground); }
+.portalSurface {
+  border: 3px solid var(--example-accent, #db8050);
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+}
 ```
 
-<Demo id="E15" title="Portal 后的局部主题">演示容器设置绿色变量。默认弹层通过 Portal 挂到 body，不再继承这层变量，显示橙色回退；第二个弹层显式设置绿色。Escape 或关闭按钮均可退出，原始容器样式不会外溢。</Demo>
+<Demo id="E15" title="Portal 后的局部主题">
+  演示容器设置绿色变量。默认弹层通过 Portal 挂到
+  body，不再继承这层变量，显示橙色回退；第二个弹层显式设置绿色。Escape
+  或关闭按钮均可退出，原始容器样式不会外溢。
+</Demo>
 
 React Portal 保留 React 树的 Context 和事件传播关系，CSS 却由实际 DOM 决定。Ant Design ConfigProvider 的逻辑主题上下文可跨 Portal；自定义 CSS 变量若仅在局部 DOM 上定义，仍须单独检查继承。
 

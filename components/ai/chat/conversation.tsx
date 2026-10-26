@@ -1,8 +1,8 @@
-'use client';
-import { useTranslations } from '@fuma-translate/react';
-import { ArrowDownIcon } from 'lucide-react';
-import { createContext, type ReactNode, use, useLayoutEffect, useRef, useState } from 'react';
-import { cn } from '../../../lib/cn';
+"use client";
+import { useTranslations } from "@fuma-translate/react";
+import { ArrowDownIcon } from "lucide-react";
+import { createContext, type ReactNode, use, useLayoutEffect, useRef, useState } from "react";
+import { cn } from "../../../lib/cn";
 
 interface Scroll {
   follow: boolean;
@@ -20,7 +20,7 @@ const ConversationContext = createContext<{ pin: () => void } | null>(null);
  * Follows the answer until the reader scrolls up, asking again follows the new one.
  */
 export function Conversation({ className, children }: { className?: string; children: ReactNode }) {
-  const t = useTranslations({ note: 'AI chat' });
+  const t = useTranslations({ note: "AI chat" });
   const scrollRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const scroll = useRef<Scroll>({ follow: true, ready: false, lastTop: 0 });
@@ -59,23 +59,23 @@ export function Conversation({ className, children }: { className?: string; chil
       state.lastTop = top;
       setAtEnd(isAtEnd(scroller, state));
     };
-    scroller.addEventListener('scroll', onScroll, { passive: true });
+    scroller.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       observer.disconnect();
       stop(state);
-      scroller.removeEventListener('scroll', onScroll);
+      scroller.removeEventListener("scroll", onScroll);
     };
   }, []);
 
   return (
-    <div className={cn('relative min-h-0', className)}>
+    <div className={cn("relative min-h-0", className)}>
       <div
         ref={scrollRef}
         className="fd-scroll-container size-full overflow-y-auto overscroll-contain"
         style={{
           maskImage:
-            'linear-gradient(to bottom, transparent, white 1rem, white calc(100% - 1rem), transparent)',
+            "linear-gradient(to bottom, transparent, white 1rem, white calc(100% - 1rem), transparent)",
         }}
       >
         <div ref={listRef} role="log" className="flex min-h-full flex-col gap-8 px-3 pt-2 pb-6">
@@ -84,7 +84,7 @@ export function Conversation({ className, children }: { className?: string; chil
       </div>
       <button
         type="button"
-        aria-label={t('Scroll to latest', { note: 'aria-label' })}
+        aria-label={t("Scroll to latest", { note: "aria-label" })}
         tabIndex={atEnd ? -1 : 0}
         data-hidden={atEnd}
         className="absolute bottom-3 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full border bg-fd-popover text-fd-muted-foreground shadow-lg transition-[opacity,translate,color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-fd-popover-foreground data-[hidden=true]:pointer-events-none data-[hidden=true]:translate-y-2 data-[hidden=true]:opacity-0 motion-reduce:transition-none"
@@ -129,7 +129,7 @@ function glide(scroller: HTMLElement, state: Scroll) {
   stop(state);
   const from = scroller.scrollTop;
   const distance = Math.abs(endOf(scroller) - from);
-  reducedMotion ??= matchMedia('(prefers-reduced-motion: reduce)');
+  reducedMotion ??= matchMedia("(prefers-reduced-motion: reduce)");
   if (distance < 2 || reducedMotion.matches) {
     jump(scroller, state, endOf(scroller));
     return;

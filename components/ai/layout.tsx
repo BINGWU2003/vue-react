@@ -1,6 +1,6 @@
-'use client';
-import { DocsLayout as Layout, type DocsLayoutProps } from 'fumadocs-ui/layouts/docs';
-import { AIChat, AIChatPanel, AIChatTrigger, useAIChat } from './search';
+"use client";
+import { DocsLayout as Layout, type DocsLayoutProps } from "fumadocs-ui/layouts/docs";
+import { AIChat, AIChatPanel, AIChatTrigger, useAIChat } from "./search";
 
 export function DocsLayout(props: DocsLayoutProps) {
   return (

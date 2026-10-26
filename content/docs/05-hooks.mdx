@@ -12,21 +12,21 @@ description: 复用计数与窗口订阅逻辑，理解执行上下文、输入�
 <CodeBlockTab value="vue">
 
 ```ts title="useCounter.ts"
-import { ref } from 'vue'
+import { ref } from "vue";
 export function useCounter() {
-  const count = ref(0)
-  const increment = () => count.value++
-  return { count, increment }
+  const count = ref(0);
+  const increment = () => count.value++;
+  return { count, increment };
 }
 ```
 
 ```vue title="CounterPair.vue"
 <script setup lang="ts">
-import { useCounter } from './useCounter'
-const a = useCounter()
-const b = useCounter()
+import { useCounter } from "./useCounter";
+const a = useCounter();
+const b = useCounter();
 // 返回 refs 后解构安全：解构拿到的是 ref 容器。
-const { count, increment } = useCounter()
+const { count, increment } = useCounter();
 </script>
 <template>
   <button @click="a.increment">独立 A：{{ a.count.value }}</button>
@@ -40,15 +40,20 @@ const { count, increment } = useCounter()
 <CodeBlockTab value="react">
 
 ```tsx title="communication.tsx · 导入"
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 ```
 
-<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>../../components/examples/communication.tsx#reuse</include>
+<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>
+  ../../components/examples/communication.tsx#reuse
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E08" title="独立复用与显式共享">点独立 A，B 不变；点共享 A，共享 B 同步，因为父级只创建一份状态。调整窗口大小，订阅逻辑更新宽度，卸载时解除监听。</Demo>
+<Demo id="E08" title="独立复用与显式共享">
+  点独立 A，B 不变；点共享 A，共享 B
+  同步，因为父级只创建一份状态。调整窗口大小，订阅逻辑更新宽度，卸载时解除监听。
+</Demo>
 
 <Diagram id="F05" />
 
@@ -60,10 +65,10 @@ Vue composable 通常在 setup 中调用，随着实例建立状态和资源。R
 
 ```tsx title="条件放进 Effect"
 useEffect(() => {
-  if (!enabled) return
-  const unsubscribe = subscribe(target)
-  return unsubscribe
-}, [enabled, target])
+  if (!enabled) return;
+  const unsubscribe = subscribe(target);
+  return unsubscribe;
+}, [enabled, target]);
 ```
 
 Vue 生命周期等能力依赖活动的组件或 effect scope，应按其上下文约束调用。React use 等特殊 API 有单独规则，本章不把特殊例外推广到普通 Hooks。
@@ -73,17 +78,21 @@ Vue 生命周期等能力依赖活动的组件或 effect scope，应按其上下
 Vue composable 接收普通值，只能读到该次传入的值；需要持续响应参数变化，可接收 ref 或 getter，再通过 toValue 规范化。toValue 为 Vue 3.3+ API，必须在追踪上下文中调用才能收集相应依赖。
 
 ```ts title="useDocumentTitle.ts · Vue"
-import { toValue, watchEffect, type MaybeRefOrGetter } from 'vue'
+import { toValue, watchEffect, type MaybeRefOrGetter } from "vue";
 export function useDocumentTitle(title: MaybeRefOrGetter<string>) {
-  watchEffect(() => { document.title = toValue(title) })
+  watchEffect(() => {
+    document.title = toValue(title);
+  });
 }
 // 调用：useDocumentTitle(() => props.name)
 ```
 
 ```tsx title="useDocumentTitle.ts · React"
-import { useEffect } from 'react'
+import { useEffect } from "react";
 export function useDocumentTitle(title: string) {
-  useEffect(() => { document.title = title }, [title])
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 }
 // 渲染时调用：useDocumentTitle(name)
 ```
@@ -95,13 +104,18 @@ export function useDocumentTitle(title: string) {
 Vue 常返回“包含 refs 的普通对象”，方便解构。返回 reactive 对象再解构基本类型字段，可能失去代理读取连接。React 返回值属于当前渲染，解构不会破坏什么自动依赖图；但每次创建的函数或对象引用可能变化，调用方若将它们用作依赖，需明确稳定性约定，而非一律 useCallback。
 
 ```ts title="Vue：作用域内窗口订阅"
-import { onMounted, onScopeDispose, ref } from 'vue'
+import { onMounted, onScopeDispose, ref } from "vue";
 export function useWindowWidth() {
-  const width = ref<number | null>(null)
-  const update = () => { width.value = window.innerWidth }
-  onMounted(() => { update(); window.addEventListener('resize', update) })
-  onScopeDispose(() => window.removeEventListener('resize', update))
-  return width
+  const width = ref<number | null>(null);
+  const update = () => {
+    width.value = window.innerWidth;
+  };
+  onMounted(() => {
+    update();
+    window.addEventListener("resize", update);
+  });
+  onScopeDispose(() => window.removeEventListener("resize", update));
+  return width;
 }
 ```
 

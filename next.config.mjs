@@ -1,4 +1,4 @@
-import { createMDX } from 'fumadocs-mdx/next';
+import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
@@ -7,8 +7,8 @@ const config = {
   reactStrictMode: true,
   async redirects() {
     return [
-      { source: '/docs/topics', destination: '/docs', permanent: true },
-      { source: '/docs/notes', destination: '/docs', permanent: true },
+      { source: "/docs/topics", destination: "/docs", permanent: true },
+      { source: "/docs/notes", destination: "/docs", permanent: true },
     ];
   },
 };

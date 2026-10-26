@@ -5,6 +5,16 @@
   background: var(--example-background, #f2f8f5);
   color: var(--example-text, #18372a);
 }
-.selected { box-shadow: inset 4px 0 var(--example-accent, #568275); }
-.compact { padding: 12px; }
-.portalSurface { border: 3px solid var(--example-accent, #db8050); padding: 24px; border-radius: 14px; background: var(--color-fd-background); color: var(--color-fd-foreground); }
+.selected {
+  box-shadow: inset 4px 0 var(--example-accent, #568275);
+}
+.compact {
+  padding: 12px;
+}
+.portalSurface {
+  border: 3px solid var(--example-accent, #db8050);
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+}

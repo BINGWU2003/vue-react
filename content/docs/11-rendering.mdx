@@ -16,24 +16,30 @@ Vue 通过 ref/代理读取收集相关响应式依赖，再触发 effect 与调
 ## 观察执行、提交与 DOM 修改
 
 ```tsx title="rendering.tsx · 导入"
-import { memo, Profiler, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, Profiler, useEffect, useMemo, useRef, useState } from "react";
 ```
 
-<include lang="tsx" meta='title="rendering.tsx · 实际演示源码"'>../../components/examples/rendering.tsx#rendering</include>
+<include lang="tsx" meta='title="rendering.tsx · 实际演示源码"'>
+  ../../components/examples/rendering.tsx#rendering
+</include>
 
-<Demo id="E16" title="提交观察与 DOM mutation">修改显示字段，计数文本变化；修改未显示字段，React 有更新工作，但被观察区域不需要修改 DOM。重复设置相同值通常可跳过更新。开发环境观察 Profiler，生产默认禁用其计时回调；DOM mutation 计数仍可用。</Demo>
+<Demo id="E16" title="提交观察与 DOM mutation">
+  修改显示字段，计数文本变化；修改未显示字段，React 有更新工作，但被观察区域不需要修改
+  DOM。重复设置相同值通常可跳过更新。开发环境观察 Profiler，生产默认禁用其计时回调；DOM mutation
+  计数仍可用。
+</Demo>
 
 MutationObserver 统计的是被观察区域的 mutation records，不是渲染次数或严格的一次业务变更数量。Profiler onRender 表示一次已提交的分析回调，也不是组件函数每次尝试执行的记录。打开控制台筛选 E16，可分别看到 render Parent/Child、commit 后观察、Effect setup/cleanup。render 中的 console 仅用于调试，不是应放在渲染中的业务副作用。memo 子组件的字符串 prop 保持稳定，因此父级变化不必让它执行。
 
 ```vue title="Vue：分别记录 setup、render 与更新后观察"
 <script setup lang="ts">
-import { onRenderTracked, onRenderTriggered, onUpdated, ref } from 'vue'
-console.log('setup：实例创建')
-const count = ref(0)
-const extra = ref(0)
-onRenderTracked(event => console.log('track：开发调试', event.key))
-onRenderTriggered(event => console.log('trigger：开发调试', event.key))
-onUpdated(() => console.log('updated：组件更新后'))
+import { onRenderTracked, onRenderTriggered, onUpdated, ref } from "vue";
+console.log("setup：实例创建");
+const count = ref(0);
+const extra = ref(0);
+onRenderTracked((event) => console.log("track：开发调试", event.key));
+onRenderTriggered((event) => console.log("trigger：开发调试", event.key));
+onUpdated(() => console.log("updated：组件更新后"));
 </script>
 <template>
   <button @click="count++">显示字段</button><button @click="extra++">未显示字段</button>
@@ -53,16 +59,24 @@ Vue 子组件更新与其响应式依赖、props 变化、编译优化等有关�
 
 ## 列表 key 与表单重置
 
-<include lang="tsx" meta='title="rendering.tsx · 身份示例"'>../../components/examples/rendering.tsx#identity</include>
+<include lang="tsx" meta='title="rendering.tsx · 身份示例"'>
+  ../../components/examples/rendering.tsx#identity
+</include>
 
-<Demo id="E17" title="稳定身份与状态重置">编辑第一行草稿后反转列表：稳定 id 让草稿跟着商品。切换索引 key 后重新编辑、反转，草稿会跟着位置。改变容器 key 则重建全部表单。</Demo>
+<Demo id="E17" title="稳定身份与状态重置">
+  编辑第一行草稿后反转列表：稳定 id 让草稿跟着商品。切换索引 key
+  后重新编辑、反转，草稿会跟着位置。改变容器 key 则重建全部表单。
+</Demo>
 
 ```vue title="Vue：相同身份实验"
 <script setup lang="ts">
-import { ref } from 'vue'
-import Row from './Row.vue'
-const items = ref([{ id: 1, name: '笔记本' }, { id: 2, name: '钢笔' }])
-const revision = ref(0)
+import { ref } from "vue";
+import Row from "./Row.vue";
+const items = ref([
+  { id: 1, name: "笔记本" },
+  { id: 2, name: "钢笔" },
+]);
+const revision = ref(0);
 </script>
 <template>
   <button @click="items.reverse()">反转</button><button @click="revision++">重建</button>
@@ -72,11 +86,13 @@ const revision = ref(0)
 
 ```vue title="Row.vue"
 <script setup lang="ts">
-import { ref } from 'vue'
-const props = defineProps<{ name: string }>()
-const draft = ref(props.name) // 刻意表示只取初值的本地草稿
+import { ref } from "vue";
+const props = defineProps<{ name: string }>();
+const draft = ref(props.name); // 刻意表示只取初值的本地草稿
 </script>
-<template><label>{{ name }} 的草稿 <input v-model="draft" /></label></template>
+<template>
+  <label>{{ name }} 的草稿 <input v-model="draft" /></label>
+</template>
 ```
 
 <Diagram id="F11" />
@@ -85,19 +101,27 @@ const draft = ref(props.name) // 刻意表示只取初值的本地草稿
 
 ## 昂贵计算与记忆化
 
-<include lang="tsx" meta='title="rendering.tsx · 计算与缓存"'>../../components/examples/rendering.tsx#memo</include>
+<include lang="tsx" meta='title="rendering.tsx · 计算与缓存"'>
+  ../../components/examples/rendering.tsx#memo
+</include>
 
-<Demo id="E18" title="昂贵计算与 useMemo">改变关键词，两端结果相同；点击无关状态，直接计算重新执行，useMemo 保留最近结果和对应计算耗时。计时受设备和开发检查影响，不能作为 Vue/React 排名。</Demo>
+<Demo id="E18" title="昂贵计算与 useMemo">
+  改变关键词，两端结果相同；点击无关状态，直接计算重新执行，useMemo
+  保留最近结果和对应计算耗时。计时受设备和开发检查影响，不能作为 Vue/React 排名。
+</Demo>
 
 ```vue title="Vue：按需计算与缓存"
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-const query = ref('1')
-const count = ref(0)
-const rows = Array.from({ length: 12000 }, (_, i) => `商品 ${i + 1}`)
-const filtered = computed(() => rows.filter(name => name.includes(query.value)))
+import { computed, ref } from "vue";
+const query = ref("1");
+const count = ref(0);
+const rows = Array.from({ length: 12000 }, (_, i) => `商品 ${i + 1}`);
+const filtered = computed(() => rows.filter((name) => name.includes(query.value)));
 </script>
-<template><input v-model="query" /><button @click="count++">无关状态：{{ count }}</button><p>{{ filtered.length }}</p></template>
+<template>
+  <input v-model="query" /><button @click="count++">无关状态：{{ count }}</button>
+  <p>{{ filtered.length }}</p>
+</template>
 ```
 
 computed 通常缓存且惰性求值，依赖失效不等于立即完成所有重算。React useMemo 缓存计算值，useCallback 缓存函数引用，memo 优化组件边界，三者都不自动收集属性依赖；不应依赖缓存永不失效来保证正确性。

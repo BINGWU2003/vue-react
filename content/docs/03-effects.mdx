@@ -13,24 +13,31 @@ description: 从外部同步理解 Effect，观察依赖变化、清理、DOM �
 
 ```vue title="Subscription.vue"
 <script setup lang="ts">
-import { ref, watch, watchEffect } from 'vue'
-const target = ref('商品 A')
-const ticks = ref(0)
-watch(target, (value, _oldValue, onCleanup) => {
-  console.log('setup', value)
-  const timer = setInterval(() => ticks.value++, 1000)
-  const handler = () => console.log('resize', value)
-  window.addEventListener('resize', handler)
-  onCleanup(() => {
-    clearInterval(timer)
-    window.removeEventListener('resize', handler)
-    console.log('cleanup', value)
-  })
-}, { immediate: true })
-watchEffect(() => console.log('自动追踪', target.value))
+import { ref, watch, watchEffect } from "vue";
+const target = ref("商品 A");
+const ticks = ref(0);
+watch(
+  target,
+  (value, _oldValue, onCleanup) => {
+    console.log("setup", value);
+    const timer = setInterval(() => ticks.value++, 1000);
+    const handler = () => console.log("resize", value);
+    window.addEventListener("resize", handler);
+    onCleanup(() => {
+      clearInterval(timer);
+      window.removeEventListener("resize", handler);
+      console.log("cleanup", value);
+    });
+  },
+  { immediate: true },
+);
+watchEffect(() => console.log("自动追踪", target.value));
 </script>
 <template>
-  <select v-model="target"><option>商品 A</option><option>商品 B</option></select>
+  <select v-model="target">
+    <option>商品 A</option>
+    <option>商品 B</option>
+  </select>
   <p>{{ target }} · {{ ticks }} 秒</p>
 </template>
 ```
@@ -39,22 +46,27 @@ watchEffect(() => console.log('自动追踪', target.value))
 <CodeBlockTab value="react">
 
 ```tsx title="effects.tsx · 导入"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 ```
 
-<include lang="tsx" meta='title="effects.tsx · 订阅与测量"'>../../components/examples/effects.tsx#subscription</include>
+<include lang="tsx" meta='title="effects.tsx · 订阅与测量"'>
+  ../../components/examples/effects.tsx#subscription
+</include>
 
 </CodeBlockTab>
 </CodeBlockTabs>
 
-<Demo id="E05" title="订阅建立、清理与 DOM 测量">等待计时、切换目标，观察 cleanup 旧目标先于 setup 新目标。卸载后定时器和 resize 监听均停止。开发模式首次可能出现 setup → cleanup → setup；清空日志后再操作可看清后续周期。</Demo>
+<Demo id="E05" title="订阅建立、清理与 DOM 测量">
+  等待计时、切换目标，观察 cleanup 旧目标先于 setup 新目标。卸载后定时器和 resize
+  监听均停止。开发模式首次可能出现 setup → cleanup → setup；清空日志后再操作可看清后续周期。
+</Demo>
 
 ## 依赖由谁声明
 
-| 机制 | 依赖与触发 | 回调读取其他值 |
-| --- | --- | --- |
-| Vue watch | 显式 ref、getter 或来源数组 | 不因回调普通读取额外收集来源 |
-| Vue watchEffect | 自动追踪同步期间响应式读取 | 首个 await 后的读取不被这轮同步收集 |
+| 机制            | 依赖与触发                    | 回调读取其他值                               |
+| --------------- | ----------------------------- | -------------------------------------------- |
+| Vue watch       | 显式 ref、getter 或来源数组   | 不因回调普通读取额外收集来源                 |
+| Vue watchEffect | 自动追踪同步期间响应式读取    | 首个 await 后的读取不被这轮同步收集          |
 | React useEffect | 显式数组，逐项 Object.is 比较 | 不自动追踪对象属性，使用的响应式值应列为依赖 |
 
 Vue `watch(() => object.field, ...)` 追踪指定 getter。监听整个 reactive 对象的深层变更时，旧值、新值可能指向同一对象，oldValue 不等于自动深拷贝快照。
@@ -73,35 +85,43 @@ React render 计算界面描述，commit 后才有相应 DOM。useLayoutEffect �
 
 ```vue title="Vue：读取更新后的宽度"
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
-const expanded = ref(false)
-const box = ref<HTMLElement | null>(null)
-watch(expanded, () => console.log(box.value?.getBoundingClientRect().width), { flush: 'post' })
+import { ref, watch, nextTick } from "vue";
+const expanded = ref(false);
+const box = ref<HTMLElement | null>(null);
+watch(expanded, () => console.log(box.value?.getBoundingClientRect().width), { flush: "post" });
 async function expand() {
-  expanded.value = true
-  await nextTick()
-  console.log(box.value?.getBoundingClientRect().width)
+  expanded.value = true;
+  await nextTick();
+  console.log(box.value?.getBoundingClientRect().width);
 }
 </script>
-<template><button @click="expand">展开</button><div ref="box" :style="{ width: expanded ? '100%' : '50%' }">内容</div></template>
+<template>
+  <button @click="expand">展开</button>
+  <div ref="box" :style="{ width: expanded ? '100%' : '50%' }">内容</div>
+</template>
 ```
 
 E05 的 useLayoutEffect 建立 ResizeObserver，尺寸变化通过观察器回调反馈，卸载时断开。React 没有适用于所有 DOM 等待目的的 nextTick 等价函数。
 
 ## 闭包旧值：快照还是最新值
 
-<include lang="tsx" meta='title="effects.tsx · 延迟读取"'>../../components/examples/effects.tsx#closure</include>
+<include lang="tsx" meta='title="effects.tsx · 延迟读取"'>
+  ../../components/examples/effects.tsx#closure
+</include>
 
-<Demo id="E06" title="延迟读取中的快照与最新引用">安排读取后立即加一。1.5 秒后，闭包保留安排时的 count，ref 提供最近已提交值。业务可能需要点击时的快照，也可能需要完成时的当前值。</Demo>
+<Demo id="E06" title="延迟读取中的快照与最新引用">
+  安排读取后立即加一。1.5 秒后，闭包保留安排时的 count，ref
+  提供最近已提交值。业务可能需要点击时的快照，也可能需要完成时的当前值。
+</Demo>
 
 Vue 延迟函数内直接读取 count.value 通常取得执行时的当前值；先捕获普通变量，再延迟读取，也得到旧快照：
 
 ```ts title="Vue：捕获与延迟读取"
-const captured = count.value
+const captured = count.value;
 const timer = setTimeout(() => {
-  console.log('安排时', captured, '执行时', count.value)
-}, 1500)
-onUnmounted(() => clearTimeout(timer))
+  console.log("安排时", captured, "执行时", count.value);
+}, 1500);
+onUnmounted(() => clearTimeout(timer));
 ```
 
 React 基于前值更新用函数式 setter；让 Effect 随参数重建应补齐依赖；异步回调需要最新已提交值才考虑 ref。React 19.2+ useEffectEvent 适合 Effect 中的非响应式事件逻辑，不能作为任意省略依赖的工具。

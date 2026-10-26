@@ -28,7 +28,16 @@ pnpm dev
 
 ## 项目校验
 
+使用 Oxfmt 默认规则统一格式，运行以下命令格式化项目：
+
 ```bash
+pnpm format
+```
+
+检查格式并运行项目校验：
+
+```bash
+pnpm format:check
 pnpm lint
 pnpm types:check
 pnpm build

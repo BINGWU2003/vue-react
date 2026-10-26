@@ -1,14 +1,14 @@
-'use client';
-import { CodeBlock, Pre as CodePre } from '../../codeblock';
-import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
-import type { Element, ElementContent, Root } from 'hast';
-import { type Components, toJsx } from 'fumadocs-core/utils/hast-to-jsx';
-import { type ComponentProps, memo, useState } from 'react';
-import { remark } from 'remark';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import remend from 'remend';
+"use client";
+import { CodeBlock, Pre as CodePre } from "../../codeblock";
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
+import defaultMdxComponents from "fumadocs-ui/mdx";
+import type { Element, ElementContent, Root } from "hast";
+import { type Components, toJsx } from "fumadocs-core/utils/hast-to-jsx";
+import { type ComponentProps, memo, useState } from "react";
+import { remark } from "remark";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import remend from "remend";
 
 const processor = remark().use(remarkGfm).use(remarkRehype);
 const streamProcessor = remark().use(remarkGfm).use(remarkRehype).use(rehypeWords);
@@ -16,7 +16,7 @@ const streamProcessor = remark().use(remarkGfm).use(remarkRehype).use(rehypeWord
 const components: Partial<Components> = {
   ...defaultMdxComponents,
   pre: Pre,
-  img: 'img',
+  img: "img",
 };
 // code is highlighted once its block settles
 const liveComponents: Partial<Components> = { ...components, pre: LivePre };
@@ -32,7 +32,7 @@ export function Markdown({ text, live }: { text: string; live: boolean }) {
       {blocks.map((block, i) => (
         <Block
           key={i}
-          text={live && i === blocks.length - 1 ? remend(block, { linkMode: 'text-only' }) : block}
+          text={live && i === blocks.length - 1 ? remend(block, { linkMode: "text-only" }) : block}
           live={live && i === blocks.length - 1}
         />
       ))}
@@ -53,12 +53,12 @@ const listItem = /^(?:[-*+]|\d{1,9}[.)])\s/;
 /** top-level blocks split at blank lines, a block continues through code fences, indented lines and list items */
 export function splitBlocks(text: string): string[] {
   const blocks: string[] = [];
-  let block = '';
+  let block = "";
   let fence: string | undefined;
   let blank = false;
   let inList = false;
 
-  for (const line of text.split('\n')) {
+  for (const line of text.split("\n")) {
     if (fence) {
       block += `\n${line}`;
       const close = /^ {0,3}(`{3,}|~{3,})\s*$/.exec(line)?.[1];
@@ -90,15 +90,15 @@ export function splitBlocks(text: string): string[] {
   return blocks;
 }
 
-function Pre({ children }: ComponentProps<'pre'>) {
+function Pre({ children }: ComponentProps<"pre">) {
   const code = codeOf(children);
   if (!code) return null;
-  const lang = /language-(\S+)/.exec(code.className ?? '')?.[1] ?? 'text';
+  const lang = /language-(\S+)/.exec(code.className ?? "")?.[1] ?? "text";
 
-  return <DynamicCodeBlock lang={lang === 'mdx' ? 'md' : lang} code={code.children.trimEnd()} />;
+  return <DynamicCodeBlock lang={lang === "mdx" ? "md" : lang} code={code.children.trimEnd()} />;
 }
 
-function LivePre({ children }: ComponentProps<'pre'>) {
+function LivePre({ children }: ComponentProps<"pre">) {
   const code = codeOf(children);
   if (!code) return null;
 
@@ -112,25 +112,25 @@ function LivePre({ children }: ComponentProps<'pre'>) {
 }
 
 function codeOf(children: unknown) {
-  const props = (children as { props?: ComponentProps<'code'> } | undefined)?.props;
-  if (typeof props?.children === 'string') return props as { children: string; className?: string };
+  const props = (children as { props?: ComponentProps<"code"> } | undefined)?.props;
+  if (typeof props?.children === "string") return props as { children: string; className?: string };
 }
 
 function rehypeWords() {
   const split = (parent: Root | Element) => {
     for (let i = 0; i < parent.children.length; i++) {
       const node = parent.children[i];
-      if (node.type === 'element' && node.tagName !== 'pre') split(node);
-      if (node.type !== 'text') continue;
+      if (node.type === "element" && node.tagName !== "pre") split(node);
+      if (node.type !== "text") continue;
 
       const words: ElementContent[] = [];
       for (const word of node.value.split(/(?=\s)/)) {
         if (word.length === 0) continue;
         words.push({
-          type: 'element',
-          tagName: 'span',
-          properties: { className: ['motion-safe:animate-fd-fade-in'] },
-          children: [{ type: 'text', value: word }],
+          type: "element",
+          tagName: "span",
+          properties: { className: ["motion-safe:animate-fd-fade-in"] },
+          children: [{ type: "text", value: word }],
         });
       }
 
