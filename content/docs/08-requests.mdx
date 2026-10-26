@@ -1,0 +1,158 @@
+---
+title: 08 · React 请求管理
+description: 从手动请求暴露竞态，再用 TanStack Query 管理缓存、分页、失效与乐观回滚。
+---
+
+## 实际需求与三层职责
+
+商品搜索支持分页、加载、失败与空结果；快速切换条件时旧响应不能覆盖新结果；多个组件复用同一份数据；收藏立即反馈，失败后恢复。
+
+**本章只讲 React**。fetch 与 Axios 发出 HTTP 请求；TanStack React Query 管理异步服务端状态，可以搭配任一客户端；Zustand 管理客户端 UI/业务状态。Query 不是一种新的 HTTP 协议。
+
+## 手动请求：先把 HTTP 语义说明白
+
+fetch 对 HTTP 404/503 通常仍 resolve，必须显式检查 response.ok；网络失败、取消、响应解析失败是不同错误。Axios 默认对非 2xx 响应 reject，可通过 validateStatus 改变。业务错误可能发生在 HTTP 200 中，需按接口协议判断，不能仅靠网络成功。
+
+```ts title="fetch：参数、请求体与错误"
+async function readProducts(q: string, signal: AbortSignal) {
+  const search = new URLSearchParams({ q, page: '1' })
+  const response = await fetch(`/api/examples/products?${search}`, { signal })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json()
+}
+// 写接口时使用相应地址；本站商品列表模拟接口仅提供 GET。
+async function saveProduct(url: string, name: string, signal: AbortSignal) {
+  const response = await fetch(url, {
+    method: 'POST', signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json()
+}
+```
+
+<CodeOnly>Axios 采用 1.x，独立项目安装 axios@1。以下客户端可调用本站同样形状的接口；封装只处理传输共性，不在拦截器中写商品筛选和缓存逻辑。</CodeOnly>
+
+```ts title="http.ts · Axios 1"
+import axios from 'axios'
+const api = axios.create({ baseURL: '/api/examples', timeout: 5000 })
+api.interceptors.response.use(
+  response => response,
+  error => Promise.reject(error), // 可统一记录；保留失败语义
+)
+export async function readProducts(q: string, signal: AbortSignal) {
+  const response = await api.get('/products', { params: { q, page: 1 }, signal })
+  return response.data
+}
+// axios.isAxiosError(error) 区分响应、请求和配置错误；取消可用 axios.isCancel。
+```
+
+传输层可统一 baseURL、通用头、解析和错误类型；业务授权、表单反馈、缓存 key、失效范围由业务调用处管理。不要在拦截器里吞掉错误返回 undefined。
+
+## 演示的本地数据与接口
+
+以下是实际请求封装与固定商品数据。模拟接口用 mode 决定成功、HTTP 503 或空结果，用 delay 控制延迟并限制在 0—3000ms；分页大小为 2，不调用外部服务。输入的 slow 模式在调用方映射为更长 delay。
+
+<include lang="ts" meta='title="lib/example-api.ts · 实际源码"'>../../lib/example-api.ts</include>
+
+## 暴露问题：请求竞态与生命周期
+
+搜索“笔”耗时 1800ms，再搜索“背包”耗时 200ms。如果旧结果总能提交，界面最后会显示过期的“笔”。取消能减少无用工作；结果有效性检查则守住“谁仍有资格提交”的边界。
+
+```tsx title="requests.tsx · 导入"
+import { useEffect, useRef, useState } from 'react'
+import { getProducts, type ProductPage } from '@/lib/example-api'
+```
+
+<include lang="tsx" meta='title="requests.tsx · 实际演示源码"'>../../components/examples/requests.tsx#race</include>
+
+<Demo id="E11" title="搜索竞态与取消">保持保护开启，点击竞态按钮，最终保留“背包”。关闭保护再点击，等慢响应回来，会被“笔”覆盖。切换成功、失败、空结果、慢响应再点搜索，观察界面状态；重置恢复初始条件。</Demo>
+
+<Diagram id="F08" />
+
+本例由事件发起请求。组件挂载或参数变化需要同步外部数据时，也可放在 Effect；路由数据可由 loader 发起。不要让所有请求默认挤进空依赖 Effect。
+
+```tsx title="参数驱动请求：清理与结果有效性"
+useEffect(() => {
+  const controller = new AbortController()
+  let active = true
+  setStatus('loading')
+  getProducts({ query, signal: controller.signal }).then(data => {
+    if (active) { setData(data); setStatus(data.total ? 'success' : 'empty') }
+  }).catch(error => {
+    if (active && error.name !== 'AbortError') { setError(error); setStatus('error') }
+  })
+  return () => { active = false; controller.abort() }
+}, [query])
+```
+
+取消 fetch 不承诺服务端一定停止工作，也不等于取消已经完成的任意后续异步操作。loading/error/data/empty 之外，重新获取时是否保留旧数据也是一个产品选择，不应把每次请求都变成整页空白。
+
+## Query：缓存用 key 定位
+
+TanStack React Query 5.104.5 已安装。QueryClient 提供缓存，一个演示创建一个客户端；同一示例中的消费者共享它，其他示例保持独立。影响结果的 page、mode、关键词等参数应进入 key；query function 消费 AbortSignal。
+
+```tsx title="query.tsx · 导入"
+import { useState } from 'react'
+import { keepPreviousData, QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
+import { getProducts } from '@/lib/example-api'
+```
+
+<include lang="tsx" meta='title="query.tsx · 缓存、分页与失效"'>../../components/examples/query.tsx#cache</include>
+
+<Demo id="E12" title="共享缓存、分页与失效">两处消费者使用相同 key，状态和数据更新时间一致。切页时保留上一页占位数据；10 秒内返回已取过的页可复用新鲜缓存。卸载并挂回 B、再手动失效，比较网络面板中的请求。</Demo>
+
+staleTime 是新鲜期，超过后不等于立刻删除或立即轮询；在符合条件的挂载、聚焦等触发点才可能重新获取。gcTime 是**没有观察者**后的缓存保留时间，活跃查询不因到达该时间就被移除。
+
+本例显式设 staleTime 10 秒、gcTime 60 秒、retry false、refetchOnWindowFocus false，方便观察。Query 的生产默认重试与焦点重新获取、开发 Strict Mode 的建立/清理会影响请求次数，不能按一次点击一次请求推断所有环境。失败保留错误与重试入口，空结果单独显示。
+
+## 分页与无限加载
+
+普通分页把 page 放入 key，使用 keepPreviousData 作为 placeholderData 减少闪烁；分页按钮是否禁用可结合 isPlaceholderData 和总页数。本例保留 1—3 页的固定范围。
+
+```tsx title="无限加载 · 接口片段"
+import { useInfiniteQuery } from '@tanstack/react-query'
+const query = useInfiniteQuery({
+  queryKey: ['infinite-products', keyword],
+  initialPageParam: 1,
+  queryFn: ({ pageParam, signal }) => getProducts({ query: keyword, page: pageParam, signal }),
+  getNextPageParam: last => last.page * 2 < last.total ? last.page + 1 : undefined,
+})
+// 展示 query.data?.pages.flatMap(page => page.items)
+// 加载更多：query.fetchNextPage()；依据 hasNextPage / isFetchingNextPage 控制按钮。
+```
+
+无限查询的数据是 pages/pageParams 结构，不能把普通分页数组直接作为无限查询缓存写入。keyword 是组件持有的关键词状态。
+
+## 修改、失效与乐观回滚
+
+修改后可 invalidateQueries 重新获取权威结果；接口返回完整新实体时，可 setQueryData 直接更新明确缓存。列表、统计和详情可能受同一次修改影响，失效范围要由业务关系决定。
+
+E13 使用演示独立的内存模拟服务，读取支持 signal，写入延迟 1 秒，可切换失败。它不发送真实收藏请求，重置后恢复未收藏。先取消旧获取、保存快照、临时更新，失败恢复，最终重新同步。
+
+```tsx title="query.tsx · 补充导入"
+import { useMutation } from '@tanstack/react-query'
+import { wait } from '@/lib/example-api'
+// 复用上文 createClient、useQuery、useQueryClient 等。
+```
+
+<include lang="tsx" meta='title="query.tsx · 乐观收藏"'>../../components/examples/query.tsx#optimistic</include>
+
+<Demo id="E13" title="乐观更新失败回滚">默认模拟失败。点收藏立刻变为已收藏，1 秒后显示失败并恢复。关闭模拟失败再点，保存成功后重新读取仍为已收藏。</Demo>
+
+<Diagram id="F09" />
+
+简单的整份快照回滚可能覆盖另一个更晚成功的修改。本例在同一商品保存期间禁用二次提交，避免并发写冲突；真实并发业务需采用操作序列、按实体合并或版本机制，不能把这份简化回滚直接推广。
+
+## 路由与 Zustand 的边界
+
+loader 可调用同一 QueryClient 的 ensureQueryData，页面再订阅相同 key。预取负责提前准备，Query 仍管理缓存；是否重新验证过期缓存应显式选择。见 [路由协作](/docs/06-routing#与-query-协作)。
+
+不要默认把 Query data 再复制进 Zustand：这会产生两份事实来源，失效、删除和回滚都要双重同步。表单编辑草稿可以从服务器数据初始化，然后作为独立、具有明确保存/放弃动作的客户端状态；这与复制缓存是不同需求。
+
+## 参考来源
+
+- [MDN：Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch)、[AbortController](https://developer.mozilla.org/zh-CN/docs/Web/API/AbortController)
+- [Axios：错误](https://axios-http.com/docs/handling_errors)、[取消](https://axios-http.com/docs/cancellation)、[实例](https://axios-http.com/docs/instance)
+- [Query：key](https://tanstack.com/query/latest/docs/framework/react/guides/query-keys)、[默认行为](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)、[取消](https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation)、[乐观更新](https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates)

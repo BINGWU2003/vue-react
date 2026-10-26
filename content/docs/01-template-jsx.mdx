@@ -1,0 +1,140 @@
+---
+title: 01 · 模板与 JSX
+description: 做一个可筛选的待办列表，理解表达式、条件、列表、事件与输入值的所有权。
+---
+
+## 实际需求：同一个待办列表
+
+新增待办、切换完成、筛选、删除和反转顺序。另加带内部草稿的区域，比较 CSS 隐藏与条件卸载。Vue 用模板描述结构；JSX 在 JavaScript 中组合结构，不能把模板指令原样搬过去。
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```vue title="TodoList.vue"
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+type Todo = { id: number; text: string; done: boolean }
+const todos = ref<Todo[]>([
+  { id: 1, text: '理解 JSX', done: false },
+  { id: 2, text: '建立状态快照模型', done: true },
+])
+let nextId = 3
+const text = ref('')
+const filter = ref('all')
+const shown = computed(() => todos.value.filter(
+  todo => filter.value === 'all' || todo.done === (filter.value === 'done')
+))
+function add() {
+  if (!text.value.trim()) return
+  todos.value.push({ id: nextId++, text: text.value.trim(), done: false })
+  text.value = ''
+}
+</script>
+<template>
+  <form @submit.prevent="add">
+    <input v-model="text" aria-label="待办内容" /><button>新增</button>
+  </form>
+  <select v-model="filter" aria-label="筛选">
+    <option value="all">全部</option><option value="done">已完成</option>
+    <option value="active">未完成</option>
+  </select>
+  <button @click="todos.reverse()">反转顺序</button>
+  <ul><li v-for="todo in shown" :key="todo.id">
+    <input v-model="todo.done" type="checkbox" />
+    <span :style="{ textDecoration: todo.done ? 'line-through' : undefined }">{{ todo.text }}</span>
+    <button @click="todos = todos.filter(item => item.id !== todo.id)">删除</button>
+  </li></ul>
+</template>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="basics.tsx · 导入"
+import { useRef, useState } from 'react'
+```
+
+<include lang="tsx" meta='title="basics.tsx · 实际演示源码"'>../../components/examples/basics.tsx#todo</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E01" title="待办列表与条件显示">
+  新增待办，切换完成并筛选。编辑草稿后用 CSS 隐藏再显示，内容保留；勾选“隐藏时卸载”，重新输入草稿，再隐藏和显示，内容恢复初始值。切换演示模式本身也会改变组件所在分支。
+</Demo>
+
+Vue 侧的隐藏实验可拆为 `Draft.vue` 与父级，两端复用相同初值：
+
+```vue title="Draft.vue"
+<script setup lang="ts">
+import { ref } from 'vue'
+const value = ref('我会保留吗？')
+</script>
+<template><label>组件内部草稿 <input v-model="value" /></label></template>
+```
+
+```vue title="Visibility.vue"
+<script setup lang="ts">
+import { ref } from 'vue'
+import Draft from './Draft.vue'
+const visible = ref(true)
+const unmount = ref(false)
+</script>
+<template>
+  <button @click="visible = !visible">隐藏 / 显示</button>
+  <label><input v-model="unmount" type="checkbox" />隐藏时卸载</label>
+  <template v-if="unmount"><Draft v-if="visible" /></template>
+  <Draft v-else v-show="visible" />
+</template>
+```
+
+## 表达式与属性
+
+Vue `{{ text }}`、`:title="text"` 对应 JSX `{text}`、`title={text}`。Vue 模板在适用位置解包顶层 ref，script 中通常需要 `.value`；JSX 直接引用 JavaScript 变量，没有模板解包这一步。
+
+JSX 常用 `className`、`htmlFor`，`aria-*` 与 `data-*` 保留连字符。组件大写开头，`<Card />` 表示组件，`<card>` 会被当成 DOM 标签。复杂分支可以在函数体内先计算，再返回结构。
+
+## 条件：隐藏还是卸载
+
+| 目标 | Vue | React |
+| --- | --- | --- |
+| 条件创建与销毁 | v-if / v-else | 三元表达式、返回 null |
+| 保留实例但隐藏 | v-show | display: none 或隐藏类名 |
+| 多分支页面 | 模板条件分支 | 提前返回、普通 JavaScript 分支 |
+
+CSS 隐藏保留状态、DOM 和资源订阅；条件卸载会清理实例及其资源。相同位置、相同组件是否保留状态还取决于身份，见 [第 11 章](/docs/11-rendering)。不要用 `count && <Badge />` 判断正数，0 也会被渲染；使用 `count > 0 ? <Badge /> : null`。
+
+## 列表与 key
+
+v-for 与 map 都要给同级条目稳定的业务 key。key 表示身份，不是子组件能读取的普通 prop；需要 id 时仍应显式传入。索引在插入、排序时把状态绑在位置上；随机 key 每次使身份变化。到 [E17](/docs/11-rendering#列表-key-与表单重置) 编辑草稿后反转，可以看见差别。
+
+## 事件与输入
+
+Vue `@click="add"`、React `onClick={add}` 都传处理函数。React `onClick={add()}` 会在渲染时调用；需要参数时写 `onClick={() => remove(id)}`。Vue `.stop`、`.prevent` 在 React 中分别调用 `event.stopPropagation()`、`event.preventDefault()`。阻止默认提交不等于阻止冒泡。
+
+v-model 背后也包含值与更新通知。React 受控文本输入用 value/onChange；复选框用 checked 与 `event.target.checked`。文本状态从 `''` 开始，避免在 undefined 与字符串间切换，让输入从非受控变为受控。
+
+非受控输入由 DOM 维护，用 defaultValue 提供初值，提交时以 FormData 或 ref 读取。defaultValue 后续变化不会持续控制输入；适合无需逐次同步状态的简单表单。
+
+```tsx title="非受控表单"
+function SearchForm() {
+  return <form onSubmit={event => {
+    event.preventDefault()
+    console.log(new FormData(event.currentTarget).get('q'))
+  }}><input name="q" defaultValue="笔记本" /><button>搜索</button></form>
+}
+```
+
+## 类名、内联样式与多根节点
+
+Vue 支持 class 数组、对象；React 通常组合字符串或用类名工具。React style 是 JavaScript 对象，属性用驼峰；许多数值长度自动加 px，opacity 等无单位属性不加。百分比、CSS 自定义属性等按需写字符串。见 [样式章](/docs/09-styling)。
+
+Vue SFC 支持多根节点，template 可作结构容器；React 用 `<>...</>` Fragment 避免多余 DOM。列表片段需要 key 时，从 react 导入 Fragment，写 `<Fragment key={id}>`。
+
+## 使用建议与参考
+
+先确定输入值的所有者、隐藏是否要释放资源、条目身份，再决定语法。不要为了“像 Vue”引入额外状态或直接操作 DOM。
+
+- [Vue：模板语法](https://cn.vuejs.org/guide/essentials/template-syntax.html)、[条件渲染](https://cn.vuejs.org/guide/essentials/conditional.html)、[列表渲染](https://cn.vuejs.org/guide/essentials/list.html)
+- [React：JSX 表达式](https://react.dev/learn/javascript-in-jsx-with-curly-braces)、[列表](https://react.dev/learn/rendering-lists)、[input](https://react.dev/reference/react-dom/components/input)

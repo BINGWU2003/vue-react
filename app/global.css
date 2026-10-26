@@ -10,3 +10,23 @@ html > body[data-scroll-locked] {
   margin-right: 0px !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
+
+@layer components {
+  .demo { font-size: 0.875rem; line-height: 1.7; }
+  .demo button { border: 1px solid var(--color-fd-border); border-radius: 0.5rem; padding: 0.375rem 0.75rem; background: var(--color-fd-background); cursor: pointer; }
+  .demo button:hover { background: var(--color-fd-accent); }
+  .demo button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .demo button:focus-visible, .demo input:focus-visible, .demo select:focus-visible { outline: 2px solid var(--color-fd-ring); outline-offset: 3px; }
+  .demo input:not([type='checkbox']), .demo select { border: 1px solid var(--color-fd-border); border-radius: 0.375rem; padding: 0.375rem 0.5rem; background: var(--color-fd-background); color: var(--color-fd-foreground); max-width: 100%; }
+  .demo input[type='number'] { width: 5rem; }
+  .demo input[type='checkbox'] { accent-color: #568275; }
+  .demo label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .demo form, .demo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  .demo-number { font-size: 2.5rem; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .demo-log { max-height: 14rem; overflow: auto; border-radius: 0.5rem; padding: 0.75rem; background: var(--color-fd-muted); font-family: var(--font-mono, monospace); font-size: 0.75rem; }
+  .demo dialog::backdrop, dialog.diagram-dialog::backdrop { background: rgb(0 0 0 / 0.55); }
+  .demo dialog { margin: auto; max-width: min(90vw, 32rem); }
+  .example-plain-card { border: 1px solid var(--example-accent); border-radius: 12px; padding: 24px; background: var(--example-background); color: var(--example-text); }
+  .example-plain-card.example-selected { box-shadow: inset 4px 0 var(--example-accent); }
+  .example-plain-card.example-compact { padding: 12px; }
+}

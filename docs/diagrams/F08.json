@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "搜索请求竞态",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F08.html"
+  },
+  "lanes": [
+    {
+      "id": "old",
+      "label": "旧请求 A"
+    },
+    {
+      "id": "new",
+      "label": "新请求 B"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "old-0",
+      "lane": "old",
+      "col": 0,
+      "type": "backend",
+      "label": "发起慢请求",
+      "sublabel": "关键词：笔",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "old-1",
+      "lane": "old",
+      "col": 1,
+      "type": "backend",
+      "label": "请求等待",
+      "sublabel": "耗时 1800ms",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "old-2",
+      "lane": "old",
+      "col": 2,
+      "type": "backend",
+      "label": "晚到的响应",
+      "sublabel": "已经失效",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "old-3",
+      "lane": "old",
+      "col": 3,
+      "type": "backend",
+      "label": "禁止提交",
+      "sublabel": "取消或版本校验",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "new-0",
+      "lane": "new",
+      "col": 0,
+      "type": "backend",
+      "label": "随后发起",
+      "sublabel": "关键词：背包",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "new-1",
+      "lane": "new",
+      "col": 1,
+      "type": "backend",
+      "label": "快速返回",
+      "sublabel": "耗时 200ms",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "new-2",
+      "lane": "new",
+      "col": 2,
+      "type": "backend",
+      "label": "提交新结果",
+      "sublabel": "属于当前条件",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "new-3",
+      "lane": "new",
+      "col": 3,
+      "type": "backend",
+      "label": "保留新结果",
+      "sublabel": "旧响应不能覆盖",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "old-edge-0",
+      "from": "old-0",
+      "to": "old-1"
+    },
+    {
+      "id": "old-edge-1",
+      "from": "old-1",
+      "to": "old-2"
+    },
+    {
+      "id": "old-edge-2",
+      "from": "old-2",
+      "to": "old-3"
+    },
+    {
+      "id": "new-edge-0",
+      "from": "new-0",
+      "to": "new-1"
+    },
+    {
+      "id": "new-edge-1",
+      "from": "new-1",
+      "to": "new-2"
+    },
+    {
+      "id": "new-edge-2",
+      "from": "new-2",
+      "to": "new-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "从左向右表示各自请求的过程。A 更早发起但更晚返回，AbortSignal 与有效性校验共同保护当前结果。"
+      ]
+    }
+  ]
+}

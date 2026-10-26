@@ -1,0 +1,47 @@
+import { createApp, defineComponent, h, ref, watch } from 'vue'
+import { createRouter, createWebHistory, RouterLink, RouterView, useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { loadProducts, parsePage, products, type Product } from './data'
+
+const List = defineComponent({ setup() {
+  const route = useRoute()
+  const router = useRouter()
+  const items = ref<Product[]>([])
+  const status = ref('')
+  watch(() => [route.query.q, route.query.page], async (_value, _old, onCleanup) => {
+    const controller = new AbortController()
+    onCleanup(() => controller.abort())
+    status.value = '加载中…'
+    try {
+      const result = await loadProducts(String(route.query.q ?? ''), parsePage(route.query.page), controller.signal)
+      if (!controller.signal.aborted) { items.value = result; status.value = '' }
+    } catch (error) { if (!controller.signal.aborted) status.value = String(error) }
+  }, { immediate: true })
+  return () => h('section', [
+    h('input', { 'aria-label': '搜索', value: route.query.q ?? '', onInput: (e: Event) => router.replace({ path: '/products', query: { q: (e.target as HTMLInputElement).value, page: 1 } }) }),
+    h('p', { role: 'status' }, status.value),
+    ...items.value.map(p => h('p', { key: p.id }, h(RouterLink, { to: `/products/${p.id}` }, () => p.name))),
+    h('button', { disabled: parsePage(route.query.page) === 1, onClick: () => router.push({ query: { ...route.query, page: parsePage(route.query.page) - 1 } }) }, '上一页'),
+    h('button', { onClick: () => router.push({ query: { ...route.query, page: parsePage(route.query.page) + 1 } }) }, '下一页'),
+  ])
+} })
+const Detail = defineComponent({ setup() {
+  const route = useRoute()
+  return () => {
+    const product = products.find(p => p.id === Number(route.params.id))
+    return product ? h('section', [h('h2', product.name), h(RouterLink, { to: `/products/${product.id}/edit` }, () => '编辑'), h(RouterView)]) : h('p', '商品不存在')
+  }
+} })
+const Edit = defineComponent({ setup() {
+  const dirty = ref(false)
+  onBeforeRouteLeave(() => !dirty.value || window.confirm('放弃未保存修改？'))
+  return () => h('section', [h('input', { 'aria-label': '编辑商品', onInput: () => { dirty.value = true } }), h('button', { onClick: () => { dirty.value = false } }, '模拟保存')])
+} })
+const router = createRouter({ history: createWebHistory(), routes: [
+  { path: '/', redirect: '/products' },
+  { path: '/products', component: { render: () => h(RouterView) }, children: [
+    { path: '', component: List },
+    { path: ':id(\\d+)', component: Detail, children: [{ path: 'edit', component: Edit }] },
+  ] },
+  { path: '/:pathMatch(.*)*', component: { render: () => h('p', '404：页面不存在') } },
+] })
+createApp({ render: () => h('main', [h('h1', '商品'), h(RouterLink, { to: '/products' }, () => '商品列表'), h(RouterView)]) }).use(router).mount('#app')

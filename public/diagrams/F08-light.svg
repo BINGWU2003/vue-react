@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1048 404" data-layout-contract="readable-v2" role="img" lang="zh-CN" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+        <title id="archify-diagram-title">搜索请求竞态</title>
+        <desc id="archify-diagram-description">由 Archify 生成的工作流图。</desc>
+        <!-- Definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
+          </pattern>
+        </defs><style>svg{font-family:system-ui,'Microsoft YaHei',sans-serif;background:#fafbf9}.t-primary{fill:#172e25}.t-muted,.t-dim{fill:#52665c}.c-grid{fill:none;stroke:#d9e2dc}.c-lane{fill:#eef3ef;stroke:#cbd8cf}.c-mask{fill:#fafbf9}.c-frontend{fill:#e6f2e9;stroke:#568275}.c-backend{fill:#e8eef7;stroke:#657f9d}.c-database{fill:#eee8f7;stroke:#927ab1}.c-security{fill:#f8e9df;stroke:#b7825b}.a-default,.a-emphasis,.a-security,.a-dashed{fill:none;stroke:#657b6e}.a-dashed{stroke-dasharray:4 4}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#657b6e}.c-label{fill:#fafbf9}.t-edge{fill:#344f40}@media not all{svg{background:#17201b}.t-primary{fill:#e5eee8}.t-muted,.t-dim,.t-edge{fill:#b4c7bb}.c-grid{stroke:#35463a}.c-lane{fill:#1d2a22;stroke:#3b5042}.c-mask,.c-label{fill:#17201b}.c-frontend{fill:#253b2f;stroke:#80b594}.c-backend{fill:#293643;stroke:#8ba8c9}.a-default,.a-emphasis,.a-security,.a-dashed{stroke:#aac3b3}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#aac3b3}}.t-edge-emphasis,.t-edge-default{fill:#344f40}@media not all{.t-edge-emphasis,.t-edge-default{fill:#b4c7bb}}</style>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Swimlanes -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="992" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="74" class="t-dim" font-size="13" font-weight="600">01 / 旧请求 A</text>
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="176" width="992" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="198" class="t-dim" font-size="13" font-weight="600">02 / 新请求 B</text>
+
+        <!-- Phase headers -->
+
+
+        <!-- Workflow groups -->
+
+
+        <!-- Edge paths -->
+        <path data-edge-from="new-0" data-edge-to="new-1" data-edge-key="0" data-edge-id="new-edge-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="220,243;248,243" d="M 220 243 L 248 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="new-1" data-edge-to="new-2" data-edge-key="1" data-edge-id="new-edge-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="420,243;448,243" d="M 420 243 L 448 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="new-2" data-edge-to="new-3" data-edge-key="2" data-edge-id="new-edge-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="620,243;648,243" d="M 620 243 L 648 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="old-0" data-edge-to="old-1" data-edge-key="3" data-edge-id="old-edge-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="220,119;248,119" d="M 220 119 L 248 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="old-1" data-edge-to="old-2" data-edge-key="4" data-edge-id="old-edge-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="420,119;448,119" d="M 420 119 L 448 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="old-2" data-edge-to="old-3" data-edge-key="5" data-edge-id="old-edge-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="620,119;648,119" d="M 620 119 L 648 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+
+        <!-- Nodes -->
+        <g id="node-old-0" data-node-id="old-0" data-node-label="发起慢请求" aria-label="聚焦发起慢请求，关键词：笔, 旧请求 A" data-node-kind="backend" data-node-sublabel="关键词：笔" data-node-context="旧请求 A">
+          <title>发起慢请求 · 关键词：笔 · 旧请求 A</title>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">发起慢请求</text>
+          <text data-detail="context" x="134" y="124" class="t-muted" font-size="12" text-anchor="middle">关键词：笔</text>
+        </g>
+
+        <g id="node-old-1" data-node-id="old-1" data-node-label="请求等待" aria-label="聚焦请求等待，耗时 1800ms, 旧请求 A" data-node-kind="backend" data-node-sublabel="耗时 1800ms" data-node-context="旧请求 A">
+          <title>请求等待 · 耗时 1800ms · 旧请求 A</title>
+          <rect x="248" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="248" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="334" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">请求等待</text>
+          <text data-detail="context" x="334" y="124" class="t-muted" font-size="12" text-anchor="middle">耗时 1800ms</text>
+        </g>
+
+        <g id="node-old-2" data-node-id="old-2" data-node-label="晚到的响应" aria-label="聚焦晚到的响应，已经失效, 旧请求 A" data-node-kind="backend" data-node-sublabel="已经失效" data-node-context="旧请求 A">
+          <title>晚到的响应 · 已经失效 · 旧请求 A</title>
+          <rect x="448" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="448" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="534" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">晚到的响应</text>
+          <text data-detail="context" x="534" y="124" class="t-muted" font-size="12" text-anchor="middle">已经失效</text>
+        </g>
+
+        <g id="node-old-3" data-node-id="old-3" data-node-label="禁止提交" aria-label="聚焦禁止提交，取消或版本校验, 旧请求 A" data-node-kind="backend" data-node-sublabel="取消或版本校验" data-node-context="旧请求 A">
+          <title>禁止提交 · 取消或版本校验 · 旧请求 A</title>
+          <rect x="648" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="648" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="734" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">禁止提交</text>
+          <text data-detail="context" x="734" y="124" class="t-muted" font-size="12" text-anchor="middle">取消或版本校验</text>
+        </g>
+
+        <g id="node-new-0" data-node-id="new-0" data-node-label="随后发起" aria-label="聚焦随后发起，关键词：背包, 新请求 B" data-node-kind="backend" data-node-sublabel="关键词：背包" data-node-context="新请求 B">
+          <title>随后发起 · 关键词：背包 · 新请求 B</title>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">随后发起</text>
+          <text data-detail="context" x="134" y="248" class="t-muted" font-size="12" text-anchor="middle">关键词：背包</text>
+        </g>
+
+        <g id="node-new-1" data-node-id="new-1" data-node-label="快速返回" aria-label="聚焦快速返回，耗时 200ms, 新请求 B" data-node-kind="backend" data-node-sublabel="耗时 200ms" data-node-context="新请求 B">
+          <title>快速返回 · 耗时 200ms · 新请求 B</title>
+          <rect x="248" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="248" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="334" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">快速返回</text>
+          <text data-detail="context" x="334" y="248" class="t-muted" font-size="12" text-anchor="middle">耗时 200ms</text>
+        </g>
+
+        <g id="node-new-2" data-node-id="new-2" data-node-label="提交新结果" aria-label="聚焦提交新结果，属于当前条件, 新请求 B" data-node-kind="backend" data-node-sublabel="属于当前条件" data-node-context="新请求 B">
+          <title>提交新结果 · 属于当前条件 · 新请求 B</title>
+          <rect x="448" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="448" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="534" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">提交新结果</text>
+          <text data-detail="context" x="534" y="248" class="t-muted" font-size="12" text-anchor="middle">属于当前条件</text>
+        </g>
+
+        <g id="node-new-3" data-node-id="new-3" data-node-label="保留新结果" aria-label="聚焦保留新结果，旧响应不能覆盖, 新请求 B" data-node-kind="backend" data-node-sublabel="旧响应不能覆盖" data-node-context="新请求 B">
+          <title>保留新结果 · 旧响应不能覆盖 · 新请求 B</title>
+          <rect x="648" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="648" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="734" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">保留新结果</text>
+          <text data-detail="context" x="734" y="248" class="t-muted" font-size="12" text-anchor="middle">旧响应不能覆盖</text>
+        </g>
+
+        <!-- Edge labels -->
+
+
+
+
+
+
+
+        <!-- Legend -->
+        <g data-legend="" data-legend-bridge="">
+          <text x="20" y="304" class="t-primary" font-size="12" font-weight="650">图例</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="处理步骤" data-legend-x="20" data-legend-baseline="324" data-legend-width="87">
+            <rect x="20" y="316" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="42" y="324" class="t-muted" font-size="11" font-weight="500">处理步骤</text>
+          </g>
+        </g>
+      </svg>

@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "状态放置决策",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F07.html"
+  },
+  "lanes": [
+    {
+      "id": "question",
+      "label": "依次判断"
+    },
+    {
+      "id": "owner",
+      "label": "对应归属"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "question-0",
+      "lane": "question",
+      "col": 0,
+      "type": "backend",
+      "label": "服务端数据？",
+      "sublabel": "异步事实来源",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "question-1",
+      "lane": "question",
+      "col": 1,
+      "type": "backend",
+      "label": "应进入 URL？",
+      "sublabel": "可分享和后退",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "question-2",
+      "lane": "question",
+      "col": 2,
+      "type": "backend",
+      "label": "仅组件使用？",
+      "sublabel": "局部交互",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "question-3",
+      "lane": "question",
+      "col": 3,
+      "type": "backend",
+      "label": "少量组件共享？",
+      "sublabel": "存在公共父级",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "question-4",
+      "lane": "question",
+      "col": 4,
+      "type": "backend",
+      "label": "广泛客户端状态",
+      "sublabel": "跨页面业务状态",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "owner-0",
+      "lane": "owner",
+      "col": 0,
+      "type": "backend",
+      "label": "Query",
+      "sublabel": "缓存和同步",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "owner-1",
+      "lane": "owner",
+      "col": 1,
+      "type": "backend",
+      "label": "路由 URL",
+      "sublabel": "参数和搜索条件",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "owner-2",
+      "lane": "owner",
+      "col": 2,
+      "type": "backend",
+      "label": "组件状态",
+      "sublabel": "useState 或 ref",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "owner-3",
+      "lane": "owner",
+      "col": 3,
+      "type": "backend",
+      "label": "提升或上下文",
+      "sublabel": "父级或 Context",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "owner-4",
+      "lane": "owner",
+      "col": 4,
+      "type": "backend",
+      "label": "客户端 store",
+      "sublabel": "Zustand 或 Pinia",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "question-edge-0",
+      "from": "question-0",
+      "to": "question-1",
+      "label": "否"
+    },
+    {
+      "id": "question-edge-1",
+      "from": "question-1",
+      "to": "question-2",
+      "label": "否"
+    },
+    {
+      "id": "question-edge-2",
+      "from": "question-2",
+      "to": "question-3",
+      "label": "否"
+    },
+    {
+      "id": "question-edge-3",
+      "from": "question-3",
+      "to": "question-4",
+      "label": "否"
+    },
+    {
+      "id": "decision-0",
+      "from": "question-0",
+      "to": "owner-0",
+      "label": "是",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decision-1",
+      "from": "question-1",
+      "to": "owner-1",
+      "label": "是",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decision-2",
+      "from": "question-2",
+      "to": "owner-2",
+      "label": "是",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decision-3",
+      "from": "question-3",
+      "to": "owner-3",
+      "label": "是",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decision-4",
+      "from": "question-4",
+      "to": "owner-4",
+      "label": "归入",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "上行按顺序判断，满足条件时落到下方对应容器。状态归属取决于来源与生命周期，不由库的流行程度决定。"
+      ]
+    }
+  ]
+}

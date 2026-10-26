@@ -1,0 +1,105 @@
+---
+title: 06 · 路由
+description: 用相同的商品列表、详情和编辑页，比较 Vue Router、React Router Data Mode 与 TanStack Router。
+---
+
+## 实际需求与统一路径
+
+三方使用 `/products?q=笔&page=1`、`/products/1`、`/products/1/edit`。搜索替换当前历史，分页推入新历史，浏览器后退恢复原有 URL；详情展示嵌套编辑页。非法商品编号显示未找到，编辑未保存时确认离开。
+
+<CodeOnly>
+  E09 是三套独立路由应用的代码示例。它们不嵌入本站 Next.js 路由，不会抢占文档 URL。复制公共 data.ts 与所选 main 文件到对应的 Vue+TypeScript 或 React+TypeScript 客户端项目，替换原 main 入口。分别运行两套 React 项目即可获得隔离的演示入口。生产托管时需要支持 SPA history 回退到 index.html。
+</CodeOnly>
+
+| 方案 | 独立项目依赖 | 主要模式 |
+| --- | --- | --- |
+| Vue Router | vue@3、vue-router@4 | createRouter + createWebHistory，页面内获取本地数据 |
+| React Router | react@19、react-dom@19、react-router@7 | Data Mode，createBrowserRouter + loader |
+| TanStack Router | react@19、react-dom@19、@tanstack/react-router@1 | 代码式路由，validateSearch + loaderDeps |
+
+这里选择明确主版本，避免随 latest 自动迁移主版本。Vue 示例为便于一个文件复制使用 render 函数；实际业务仍推荐把页面拆成 script setup SFC，路由与响应式语义不变。
+
+## 公共数据与延迟
+
+每个独立项目都保存以下 `src/data.ts`，它是受控本地数据，不需要远程接口。
+
+<include lang="ts" meta='title="src/data.ts"'>../examples/routing/data.ts.txt</include>
+
+## 三方实现
+
+<CodeBlockTabs defaultValue="react-router">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue-router">Vue Router 4</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react-router">React Router 7</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="tanstack-router">TanStack Router 1</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue-router">
+
+<include lang="ts" meta='title="src/main.ts · Vue Router"'>../examples/routing/vue-router.ts.txt</include>
+
+</CodeBlockTab>
+<CodeBlockTab value="react-router">
+
+<include lang="tsx" meta='title="src/main.tsx · React Router Data Mode"'>../examples/routing/react-router.tsx.txt</include>
+
+</CodeBlockTab>
+<CodeBlockTab value="tanstack-router">
+
+<include lang="tsx" meta='title="src/main.tsx · TanStack Router"'>../examples/routing/tanstack-router.tsx.txt</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+## E09 操作与观察
+
+1. 打开 `/products`，等待 500ms 加载完成，输入“笔”；URL 中出现关键词，刷新后仍可恢复。
+2. 清空搜索，翻到第 2 页，再后退，检查 URL、页码和列表一致；搜索使用 replace，不为每个字符创建一条历史。
+3. 进入商品详情，再打开嵌套 edit；查看布局与父级内容保留，子页面由 RouterView/Outlet 呈现。
+4. 改动输入后点“商品列表”，取消离开再尝试确认。刷新和关闭标签页的 beforeunload 是另外一条浏览器通路，React Router useBlocker 只处理应用内导航；需要时单独接入 useBeforeUnload。
+5. 访问不存在路径与非法商品编号，观察全站 404 与商品未找到的区别。通过开发者工具限速或临时让 loadProducts 抛错，观察等待与错误页面。
+
+<Diagram id="F06" />
+
+## 配置、导航与加载能力
+
+| 问题 | Vue Router 4 | React Router 7 Data Mode | TanStack Router 1 |
+| --- | --- | --- | --- |
+| 路由树和出口 | routes、children、RouterView | route objects、children、Outlet | createRootRoute/createRoute、addChildren、Outlet |
+| 路径参数 | useRoute().params，通常为运行时值 | useParams 或 loader params，仍需校验 | 路由对象 useParams，配合解析/校验 |
+| 查询条件 | route.query + push/replace | useSearchParams + URLSearchParams | validateSearch 规范化，typed search 导航 |
+| 编程导航 | router.push/replace，go/back | useNavigate，replace，数值历史移动 | route.useNavigate，router.history |
+| 等待状态 | 自行结合守卫、路由事件和页面状态 | useNavigation、初始 HydrateFallback | pendingComponent、pendingMs，路由状态 |
+| 错误与 404 | 捕获路由、加载错误自行组织 | errorElement、抛出错误/404 Response | errorComponent、notFoundComponent、notFound |
+| 导航控制 | beforeEach、beforeEnter、组件内守卫 | loader 重定向、useBlocker 等 | beforeLoad、redirect、useBlocker |
+
+Vue Router 支持导航前获取，也支持导航完成后由页面获取。本例采用后者，局部显示加载状态；它没有把普通路由自动变成一个与 Data Mode loader 完全相同的数据生命周期。
+
+React Router 还有 Declarative Mode 和 Framework Mode。本章 Data Mode 的 loader、useNavigation 等能力，不应直接套用到只使用 BrowserRouter/Routes 的声明式示例上。路由对象的 lazy 可拆分模块；Framework Mode 的文件约定和类型生成属于另一层能力。
+
+TanStack Router 支持代码式和文件式组织。文件式通常配合插件生成 routeTree；本例代码式不需要生成器。类型体验依赖完整路由树与 Register 声明，不是任意字符串路径都能获得同样约束。
+
+## URL、类型与导航前置条件
+
+三方都必须在运行时处理用户手改 URL：page 为空、负数、非数字时回到 1；id 即使静态类型为 string，也不能证明商品存在。排序可以沿同一模式写入 `sort` 搜索字段，并校验为有限枚举。普通 URLSearchParams 只负责字符串传输，不负责业务类型。
+
+Vue 可用全局 beforeEach 检查条件并返回重定向对象；React Router 可在 loader 中 `throw redirect('/login')`；TanStack Router 可在 beforeLoad 中 `throw redirect({ to: '/login' })`。这些都是客户端导航控制，**不替代服务端鉴权**。不要为了对称把三者生命周期中的每个 API 一一配对。
+
+## 与 Query 协作
+
+路由决定何时需要数据，Query 决定缓存定位、新鲜度和同步。把同一个 QueryClient 注入 loader 的闭包或路由 context，再用相同 query options，避免 loader 和组件各请求一次。
+
+```tsx title="React Router loader 与 Query · 接口片段"
+const productOptions = (id: string) => ({
+  queryKey: ['product', id],
+  queryFn: ({ signal }: { signal: AbortSignal }) => fetchProduct(id, signal),
+  staleTime: 30_000,
+})
+// loader: ({ params }) => queryClient.ensureQueryData(productOptions(params.id!))
+// 页面：useQuery(productOptions(id))
+```
+
+TanStack Router 可在 context 中携带 queryClient，loader 调用 ensureQueryData；导航预取与页面订阅复用同一缓存。ensureQueryData 对已有缓存的策略应按业务选择，不能假设它无条件刷新过期数据。完整 Query 机制见 [第 08 章](/docs/08-requests)。
+
+## 如何选择与参考
+
+已有生态优先沿用匹配的方案；React Router Data Mode 适合希望用明确 loader/action 组织导航数据的项目；TanStack Router 适合对路由树、参数和复杂 URL 状态类型约束要求较高的项目。先比较团队现有方式、URL 状态复杂度和数据加载职责，不预设唯一优胜者。
+
+- [Vue Router：嵌套路由](https://router.vuejs.org/zh/guide/essentials/nested-routes.html)、[数据获取](https://router.vuejs.org/zh/guide/advanced/data-fetching.html)、[导航守卫](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
+- [React Router：模式](https://reactrouter.com/start/modes)、[Data Mode](https://reactrouter.com/start/data/installation)、[阻止导航](https://reactrouter.com/how-to/navigation-blocking)
+- [TanStack Router：代码式路由](https://tanstack.com/router/latest/docs/framework/react/guide/code-based-routing)、[搜索参数](https://tanstack.com/router/latest/docs/framework/react/guide/search-params)、[数据加载](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading)

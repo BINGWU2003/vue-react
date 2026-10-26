@@ -1,0 +1,17 @@
+export type Product = { id: number; name: string }
+export const products: Product[] = [
+  { id: 1, name: '笔记本' }, { id: 2, name: '钢笔' }, { id: 3, name: '背包' },
+]
+export async function loadProducts(q: string, page: number, signal?: AbortSignal) {
+  await new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) return reject(new DOMException('Aborted', 'AbortError'))
+    const abort = () => { clearTimeout(timer); reject(new DOMException('Aborted', 'AbortError')) }
+    const timer = setTimeout(() => { signal?.removeEventListener('abort', abort); resolve() }, 500)
+    signal?.addEventListener('abort', abort, { once: true })
+  })
+  return products.filter(p => p.name.includes(q)).slice((page - 1) * 2, page * 2)
+}
+export function parsePage(raw: unknown) {
+  const number = Number(raw)
+  return Number.isSafeInteger(number) && number > 0 ? number : 1
+}

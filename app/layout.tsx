@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: appName,
     template: `%s | ${appName}`,
   },
-  description: '一份仍在构思中的 Vue 与 React 对比文档，记录问题、草稿和灵感。',
+  description: '面向 Vue 开发者的 React 19 对照文档：11 章正文、TypeScript 对照代码、交互示例和更新机制流程图。',
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {

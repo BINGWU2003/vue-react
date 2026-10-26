@@ -1,0 +1,183 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "组件库样式排查",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F10.html"
+  },
+  "lanes": [
+    {
+      "id": "inspect",
+      "label": "从公开入口排查"
+    },
+    {
+      "id": "resolve",
+      "label": "对应处理"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "inspect-0",
+      "lane": "inspect",
+      "col": 0,
+      "type": "backend",
+      "label": "确认目标",
+      "sublabel": "全局或单实例",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "inspect-1",
+      "lane": "inspect",
+      "col": 1,
+      "type": "backend",
+      "label": "公开接口",
+      "sublabel": "主题 token 和 class",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "inspect-2",
+      "lane": "inspect",
+      "col": 2,
+      "type": "backend",
+      "label": "选择器匹配",
+      "sublabel": "scoped 与 Modules",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "inspect-3",
+      "lane": "inspect",
+      "col": 3,
+      "type": "backend",
+      "label": "检查层叠",
+      "sublabel": "权重和导入顺序",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "inspect-4",
+      "lane": "inspect",
+      "col": 4,
+      "type": "backend",
+      "label": "实际 DOM",
+      "sublabel": "Portal 和 Teleport",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "resolve-0",
+      "lane": "resolve",
+      "col": 0,
+      "type": "backend",
+      "label": "限定影响范围",
+      "sublabel": "避免大范围覆盖",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "resolve-1",
+      "lane": "resolve",
+      "col": 1,
+      "type": "backend",
+      "label": "优先使用配置",
+      "sublabel": "稳定的主题能力",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "resolve-2",
+      "lane": "resolve",
+      "col": 2,
+      "type": "backend",
+      "label": "限定全局例外",
+      "sublabel": "deep 不搬动 DOM",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "resolve-3",
+      "lane": "resolve",
+      "col": 3,
+      "type": "backend",
+      "label": "查看最终规则",
+      "sublabel": "再解释 important",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "resolve-4",
+      "lane": "resolve",
+      "col": 4,
+      "type": "backend",
+      "label": "主题传播",
+      "sublabel": "上下文不同于继承",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "inspect-edge-0",
+      "from": "inspect-0",
+      "to": "inspect-1"
+    },
+    {
+      "id": "inspect-edge-1",
+      "from": "inspect-1",
+      "to": "inspect-2"
+    },
+    {
+      "id": "inspect-edge-2",
+      "from": "inspect-2",
+      "to": "inspect-3"
+    },
+    {
+      "id": "inspect-edge-3",
+      "from": "inspect-3",
+      "to": "inspect-4"
+    },
+    {
+      "id": "resolve-edge-0",
+      "from": "resolve-0",
+      "to": "resolve-1"
+    },
+    {
+      "id": "resolve-edge-1",
+      "from": "resolve-1",
+      "to": "resolve-2"
+    },
+    {
+      "id": "resolve-edge-2",
+      "from": "resolve-2",
+      "to": "resolve-3"
+    },
+    {
+      "id": "resolve-edge-3",
+      "from": "resolve-3",
+      "to": "resolve-4"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "每一步先检查，再修改。deep 只影响选择器编译；弹层换了真实父节点后，必须重新检查匹配和 CSS 变量继承。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+---
+title: 07 · 状态管理
+description: 先判断状态归属，再比较 Pinia 与 Zustand 的组织、更新和订阅方式。
+---
+
+## 实际需求：多个组件共享购物车
+
+商品按钮更新数量，汇总区域同步总价；修改钢笔时，单独订阅笔记本数量的消费者不应收到无关变化。紧凑偏好可以持久化，购物车和偏好都要可重置。
+
+## 先决定状态放在哪里
+
+<Diagram id="F07" />
+
+输入框临时草稿留在组件；兄弟组件同步先考虑状态提升；主题或稳定能力可以跨层提供；可分享、刷新和后退恢复的筛选条件进入 URL；服务端事实交给 Query 等缓存工具；广泛共享的客户端业务状态才考虑 store。
+
+React useReducer 集中转换，Context 负责跨层传递，它们并不自动具备外部 store 的 selector 订阅。Vue provide/inject 同样先解决传递问题。别把所有数据集中到一个“万能 store”。
+
+## Pinia 与 Zustand 实现
+
+Pinia 代码采用 3.x Setup Store，Vue 应用入口先 `app.use(createPinia())`；Zustand 演示采用 5.0.16，每个演示实例创建独立 store，避免和其他示例串状态。
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue / Pinia</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React / Zustand</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```ts title="stores/cart.ts"
+import { computed, ref } from 'vue'
+import { defineStore } from 'pinia'
+export const useCart = defineStore('cart', () => {
+  const quantities = ref({ notebook: 1, pen: 2 })
+  const total = computed(() => quantities.value.notebook * 20 + quantities.value.pen * 10)
+  function add(id: 'notebook' | 'pen') { quantities.value[id]++ }
+  function reset() { quantities.value = { notebook: 1, pen: 2 } }
+  return { quantities, total, add, reset }
+})
+```
+
+```vue title="Cart.vue"
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useCart } from './stores/cart'
+const cart = useCart()
+const { quantities, total } = storeToRefs(cart)
+const { add, reset } = cart
+</script>
+<template>
+  <button @click="add('notebook')">笔记本：{{ quantities.notebook }}</button>
+  <button @click="add('pen')">钢笔：{{ quantities.pen }}</button>
+  <p>总价：¥{{ total }}</p><button @click="reset">重置</button>
+</template>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="store.tsx · 导入"
+import { useEffect, useRef, useState } from 'react'
+import { createStore, type StoreApi } from 'zustand/vanilla'
+import { useStore } from 'zustand'
+import { persist } from 'zustand/middleware'
+```
+
+<include lang="tsx" meta='title="store.tsx · 实际演示源码"'>../../components/examples/store.tsx#store</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E10" title="共享购物车与 selector">增加笔记本、再增加钢笔。观察两个商品消费者各自提交后的 Effect 次数，以及汇总金额。切换持久化偏好再重置演示，偏好被重新读取；点击清除偏好恢复默认。</Demo>
+
+## 更新方式与派生值
+
+Pinia Setup Store 以 ref/computed/action 组织；Option Store 则提供 state/getters/actions。可在 action 内响应式修改，也可用 $patch 组织更新。Option Store 自带 $reset；Setup Store 通常自行提供 reset。不要把两种 store 的重置行为混为一谈。
+
+Zustand 的 set 默认浅合并顶层字段，不会替你复制嵌套对象。E10 创建新的 quantities；只改 `state.quantities.pen++` 然后返回原引用，会破坏可靠的变化表达。总价直接由 selector 计算，不存第二份 total。
+
+## 订阅粒度与引用稳定性
+
+Pinia 依赖响应式读取，storeToRefs 保留状态和 getter 的连接，action 可直接解构。Zustand 5 的 selector 结果需要稳定；单个数字或 action 引用容易保持稳定，下面这种每次创建对象的写法要小心：
+
+```tsx title="多值 selector · Zustand 5"
+import { useShallow } from 'zustand/react/shallow'
+// 对 create(...) 返回的 useCartStore：
+const { notebook, pen } = useCartStore(useShallow(state => ({
+  notebook: state.quantities.notebook,
+  pen: state.quantities.pen,
+})))
+```
+
+不要把 Pinia 的属性追踪机制迁移成“Zustand 会自动知道我读了哪个属性”。普通 useContext 消费者也没有自动的属性级 selector。
+
+## 组件外读取与订阅
+
+Zustand `store.getState()` 读取那一刻的状态，不让调用方自动订阅；`store.subscribe(listener)` 返回取消订阅函数。Pinia `$subscribe` 观察变更，`$onAction` 可观察 action；其 scope 和 detached 行为要按使用位置决定。组件外使用 Pinia 时应确保正确的活动 Pinia 实例，不要依赖尚未初始化的全局环境。
+
+```ts title="读取一次与持续订阅"
+const snapshot = store.getState()
+const unsubscribe = store.subscribe((next, previous) => {
+  console.log(previous.quantities, next.quantities)
+})
+// 在拥有者生命周期结束时调用 unsubscribe()
+```
+
+## 持久化与清理边界
+
+Zustand persist 用 partialize 只保存必要字段；本例只存 compact，采用演示专用键，并在客户端显式 rehydrate，避免服务端初始输出和浏览器存储不一致。清除持久化并不总等于重置内存状态，本例显式完成两者。
+
+Pinia 核心不默认提供浏览器持久化，可以选择插件或显式实现。下面的轻量偏好示例需在客户端挂载后读取，记得处理不可访问的存储环境：
+
+```ts title="Pinia：显式持久化思路"
+// preferences 是含 compact 字段的 store，仅在客户端执行。
+try { preferences.compact = localStorage.getItem('demo-compact-v1') === 'true' } catch { /* 保留默认 */ }
+const stop = preferences.$subscribe((_mutation, state) => {
+  try { localStorage.setItem('demo-compact-v1', String(state.compact)) } catch { /* 不影响交互 */ }
+})
+// 拥有者结束时 stop()；重置时同时恢复内存并移除该键。
+```
+
+URL 和 Query 缓存分别有自己的生命周期，不宜全部复制到 Pinia/Zustand。跨组件只是共享需求，不能自动说明“应使用全局客户端 store”。
+
+## 参考来源
+
+- [Pinia：核心概念](https://pinia.vuejs.org/zh/core-concepts/)、[state 与重置](https://pinia.vuejs.org/zh/core-concepts/state.html)
+- [Zustand：不可变更新](https://zustand.docs.pmnd.rs/guides/immutable-state-and-merging)、[useShallow](https://zustand.docs.pmnd.rs/guides/prevent-rerenders-with-use-shallow)、[persist](https://zustand.docs.pmnd.rs/integrations/persisting-store-data)

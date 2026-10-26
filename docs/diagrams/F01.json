@@ -1,0 +1,183 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "两端状态更新总览",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F01.html"
+  },
+  "lanes": [
+    {
+      "id": "vue",
+      "label": "Vue"
+    },
+    {
+      "id": "react",
+      "label": "React"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "vue-0",
+      "lane": "vue",
+      "col": 0,
+      "type": "frontend",
+      "label": "修改响应值",
+      "sublabel": "ref 或 Proxy",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "vue-1",
+      "lane": "vue",
+      "col": 1,
+      "type": "frontend",
+      "label": "触发依赖",
+      "sublabel": "相关 effect",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "vue-2",
+      "lane": "vue",
+      "col": 2,
+      "type": "frontend",
+      "label": "安排更新",
+      "sublabel": "队列与批处理",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "vue-3",
+      "lane": "vue",
+      "col": 3,
+      "type": "frontend",
+      "label": "执行渲染",
+      "sublabel": "render effect",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "vue-4",
+      "lane": "vue",
+      "col": 4,
+      "type": "frontend",
+      "label": "提交更新",
+      "sublabel": "patch DOM",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "react-0",
+      "lane": "react",
+      "col": 0,
+      "type": "backend",
+      "label": "调用 setter",
+      "sublabel": "提交更新意图",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "react-1",
+      "lane": "react",
+      "col": 1,
+      "type": "backend",
+      "label": "进入更新队列",
+      "sublabel": "状态快照不变",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "react-2",
+      "lane": "react",
+      "col": 2,
+      "type": "backend",
+      "label": "调度渲染",
+      "sublabel": "批处理与优先级",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "react-3",
+      "lane": "react",
+      "col": 3,
+      "type": "backend",
+      "label": "调用组件",
+      "sublabel": "协调界面描述",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "react-4",
+      "lane": "react",
+      "col": 4,
+      "type": "backend",
+      "label": "提交更新",
+      "sublabel": "必要的 DOM 变更",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "vue-edge-0",
+      "from": "vue-0",
+      "to": "vue-1"
+    },
+    {
+      "id": "vue-edge-1",
+      "from": "vue-1",
+      "to": "vue-2"
+    },
+    {
+      "id": "vue-edge-2",
+      "from": "vue-2",
+      "to": "vue-3"
+    },
+    {
+      "id": "vue-edge-3",
+      "from": "vue-3",
+      "to": "vue-4"
+    },
+    {
+      "id": "react-edge-0",
+      "from": "react-0",
+      "to": "react-1"
+    },
+    {
+      "id": "react-edge-1",
+      "from": "react-1",
+      "to": "react-2"
+    },
+    {
+      "id": "react-edge-2",
+      "from": "react-2",
+      "to": "react-3"
+    },
+    {
+      "id": "react-edge-3",
+      "from": "react-3",
+      "to": "react-4"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "两行分别描述 Vue 与 React。箭头表示阶段先后；执行渲染不等于必然修改 DOM，Effect 在提交后另行同步。"
+      ]
+    }
+  ]
+}

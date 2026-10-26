@@ -1,0 +1,120 @@
+---
+title: 03 · 副作用与生命周期
+description: 从外部同步理解 Effect，观察依赖变化、清理、DOM 测量与闭包快照。
+---
+
+## 实际需求：切换订阅目标
+
+组件为当前目标启动定时器并监听窗口事件；切换目标前退出旧订阅，卸载时释放资源。这里讨论本地资源，请求与竞态在 [第 08 章](/docs/08-requests)。
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```vue title="Subscription.vue"
+<script setup lang="ts">
+import { ref, watch, watchEffect } from 'vue'
+const target = ref('商品 A')
+const ticks = ref(0)
+watch(target, (value, _oldValue, onCleanup) => {
+  console.log('setup', value)
+  const timer = setInterval(() => ticks.value++, 1000)
+  const handler = () => console.log('resize', value)
+  window.addEventListener('resize', handler)
+  onCleanup(() => {
+    clearInterval(timer)
+    window.removeEventListener('resize', handler)
+    console.log('cleanup', value)
+  })
+}, { immediate: true })
+watchEffect(() => console.log('自动追踪', target.value))
+</script>
+<template>
+  <select v-model="target"><option>商品 A</option><option>商品 B</option></select>
+  <p>{{ target }} · {{ ticks }} 秒</p>
+</template>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="effects.tsx · 导入"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+```
+
+<include lang="tsx" meta='title="effects.tsx · 订阅与测量"'>../../components/examples/effects.tsx#subscription</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E05" title="订阅建立、清理与 DOM 测量">等待计时、切换目标，观察 cleanup 旧目标先于 setup 新目标。卸载后定时器和 resize 监听均停止。开发模式首次可能出现 setup → cleanup → setup；清空日志后再操作可看清后续周期。</Demo>
+
+## 依赖由谁声明
+
+| 机制 | 依赖与触发 | 回调读取其他值 |
+| --- | --- | --- |
+| Vue watch | 显式 ref、getter 或来源数组 | 不因回调普通读取额外收集来源 |
+| Vue watchEffect | 自动追踪同步期间响应式读取 | 首个 await 后的读取不被这轮同步收集 |
+| React useEffect | 显式数组，逐项 Object.is 比较 | 不自动追踪对象属性，使用的响应式值应列为依赖 |
+
+Vue `watch(() => object.field, ...)` 追踪指定 getter。监听整个 reactive 对象的深层变更时，旧值、新值可能指向同一对象，oldValue 不等于自动深拷贝快照。
+
+React 依赖数组说明 Effect 使用的响应式值。省略依赖会留下旧闭包；每次创建的新对象可能让同步反复重建。先把对象创建移入 Effect 或调整组件边界，再按需稳定引用，不要屏蔽依赖检查制造“一次执行”。
+
+## 生命周期、提交与执行时机
+
+Vue onMounted/onUnmounted 以挂载和卸载为边界；React setup/cleanup 还随依赖变化发生。空依赖表示没有响应式依赖，不承诺整个应用只执行一次。重新挂载、开发检查仍可能重建资源。
+
+<Diagram id="F03" />
+
+Vue 默认 watcher 通常在父组件更新后、所属组件 DOM 更新前执行。读取所属组件更新后的 DOM 可用 flush post；修改后等待本轮 DOM 更新可 await nextTick。flush sync 绕开常规批量调度，不作为默认。
+
+React render 计算界面描述，commit 后才有相应 DOM。useLayoutEffect 在重绘前读取布局并可安排布局状态更新，会阻塞绘制；普通外部同步优先 useEffect。不能一概说 useEffect 必在绘制后，交互等场景应按官方时机理解。
+
+```vue title="Vue：读取更新后的宽度"
+<script setup lang="ts">
+import { ref, watch, nextTick } from 'vue'
+const expanded = ref(false)
+const box = ref<HTMLElement | null>(null)
+watch(expanded, () => console.log(box.value?.getBoundingClientRect().width), { flush: 'post' })
+async function expand() {
+  expanded.value = true
+  await nextTick()
+  console.log(box.value?.getBoundingClientRect().width)
+}
+</script>
+<template><button @click="expand">展开</button><div ref="box" :style="{ width: expanded ? '100%' : '50%' }">内容</div></template>
+```
+
+E05 的 useLayoutEffect 建立 ResizeObserver，尺寸变化通过观察器回调反馈，卸载时断开。React 没有适用于所有 DOM 等待目的的 nextTick 等价函数。
+
+## 闭包旧值：快照还是最新值
+
+<include lang="tsx" meta='title="effects.tsx · 延迟读取"'>../../components/examples/effects.tsx#closure</include>
+
+<Demo id="E06" title="延迟读取中的快照与最新引用">安排读取后立即加一。1.5 秒后，闭包保留安排时的 count，ref 提供最近已提交值。业务可能需要点击时的快照，也可能需要完成时的当前值。</Demo>
+
+Vue 延迟函数内直接读取 count.value 通常取得执行时的当前值；先捕获普通变量，再延迟读取，也得到旧快照：
+
+```ts title="Vue：捕获与延迟读取"
+const captured = count.value
+const timer = setTimeout(() => {
+  console.log('安排时', captured, '执行时', count.value)
+}, 1500)
+onUnmounted(() => clearTimeout(timer))
+```
+
+React 基于前值更新用函数式 setter；让 Effect 随参数重建应补齐依赖；异步回调需要最新已提交值才考虑 ref。React 19.2+ useEffectEvent 适合 Effect 中的非响应式事件逻辑，不能作为任意省略依赖的工具。
+
+## 清理与不需要的 Effect
+
+Vue watcher onCleanup 用于释放资源；3.5+ onWatcherCleanup 要在同步阶段注册，不能在 await 后调用。同步 setup 中创建的 watcher 通常随 scope 销毁，异步创建的监听需自行明确停止责任。
+
+React cleanup 捕获本次 setup 建立的资源，移除同一监听函数并取消定时器。不要用“已执行过”的 ref 跳过开发检查，那会隐藏清理不对称。
+
+过滤列表和总价是派生计算；点击后提交表单是事件处理。不要先渲染旧派生值，再用 Effect 更新第二份状态。先问“在同步哪个外部系统”，再决定是否需要 Effect。
+
+## 参考来源
+
+- [Vue：侦听器](https://cn.vuejs.org/guide/essentials/watchers.html)、[nextTick](https://cn.vuejs.org/api/general.html#nexttick)
+- [React：同步 Effect](https://react.dev/learn/synchronizing-with-effects)、[可能不需要 Effect](https://react.dev/learn/you-might-not-need-an-effect)、[useLayoutEffect](https://react.dev/reference/react/useLayoutEffect)、[Strict Mode](https://react.dev/reference/react/StrictMode)

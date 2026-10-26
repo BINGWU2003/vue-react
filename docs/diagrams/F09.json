@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Query 缓存与修改同步",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F09.html"
+  },
+  "lanes": [
+    {
+      "id": "read",
+      "label": "查询路径"
+    },
+    {
+      "id": "write",
+      "label": "乐观修改"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "read-0",
+      "lane": "read",
+      "col": 0,
+      "type": "backend",
+      "label": "参数进入 key",
+      "sublabel": "识别缓存位置",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "read-1",
+      "lane": "read",
+      "col": 1,
+      "type": "backend",
+      "label": "检查缓存",
+      "sublabel": "复用可用数据",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "read-2",
+      "lane": "read",
+      "col": 2,
+      "type": "backend",
+      "label": "按需重新获取",
+      "sublabel": "过期或明确失效",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "read-3",
+      "lane": "read",
+      "col": 3,
+      "type": "backend",
+      "label": "更新消费者",
+      "sublabel": "共享同一个缓存",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "write-0",
+      "lane": "write",
+      "col": 0,
+      "type": "backend",
+      "label": "取消旧获取",
+      "sublabel": "保存缓存快照",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "write-1",
+      "lane": "write",
+      "col": 1,
+      "type": "backend",
+      "label": "临时更新",
+      "sublabel": "立即反馈",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "write-2",
+      "lane": "write",
+      "col": 2,
+      "type": "backend",
+      "label": "提交 mutation",
+      "sublabel": "等待模拟服务",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "write-3",
+      "lane": "write",
+      "col": 3,
+      "type": "backend",
+      "label": "成功或回滚",
+      "sublabel": "失效后重新同步",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "read-edge-0",
+      "from": "read-0",
+      "to": "read-1"
+    },
+    {
+      "id": "read-edge-1",
+      "from": "read-1",
+      "to": "read-2"
+    },
+    {
+      "id": "read-edge-2",
+      "from": "read-2",
+      "to": "read-3"
+    },
+    {
+      "id": "write-edge-0",
+      "from": "write-0",
+      "to": "write-1"
+    },
+    {
+      "id": "write-edge-1",
+      "from": "write-1",
+      "to": "write-2"
+    },
+    {
+      "id": "write-edge-2",
+      "from": "write-2",
+      "to": "write-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "staleTime 描述新鲜度，gcTime 描述无观察者时的保留时间。修改失败时恢复快照，结束后使相关查询失效。"
+      ]
+    }
+  ]
+}

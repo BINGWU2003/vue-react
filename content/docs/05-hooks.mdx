@@ -1,0 +1,117 @@
+---
+title: 05 · Composables 与自定义 Hooks
+description: 复用计数与窗口订阅逻辑，理解执行上下文、输入参数、返回接口和状态作用域。
+---
+
+## 实际需求：两个独立计数器与一份共享计数
+
+两个组件调用同一个函数，不等于共用同一份状态。决定作用域的是状态在哪里创建，而不是函数是否写在公共文件中。
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```ts title="useCounter.ts"
+import { ref } from 'vue'
+export function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+  return { count, increment }
+}
+```
+
+```vue title="CounterPair.vue"
+<script setup lang="ts">
+import { useCounter } from './useCounter'
+const a = useCounter()
+const b = useCounter()
+// 返回 refs 后解构安全：解构拿到的是 ref 容器。
+const { count, increment } = useCounter()
+</script>
+<template>
+  <button @click="a.increment">独立 A：{{ a.count.value }}</button>
+  <button @click="b.increment">独立 B：{{ b.count.value }}</button>
+  <button @click="increment">共享 A：{{ count }}</button>
+  <button @click="increment">共享 B：{{ count }}</button>
+</template>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="communication.tsx · 导入"
+import { useEffect, useState } from 'react'
+```
+
+<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>../../components/examples/communication.tsx#reuse</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E08" title="独立复用与显式共享">点独立 A，B 不变；点共享 A，共享 B 同步，因为父级只创建一份状态。调整窗口大小，订阅逻辑更新宽度，卸载时解除监听。</Demo>
+
+<Diagram id="F05" />
+
+## 执行模型与调用约束
+
+Vue composable 通常在 setup 中调用，随着实例建立状态和资源。React 自定义 Hook 是渲染逻辑的一部分，每次渲染再次执行，通过 Hooks 的位置取回保留状态。函数内普通计算每次都会发生，并不自动缓存。
+
+常规 useState/useEffect 等 Hooks 必须在组件或自定义 Hook 的顶层，以稳定顺序调用，不能放在循环、条件、事件回调或提前返回之后。需要条件同步时，在 Hook 内部判断条件：
+
+```tsx title="条件放进 Effect"
+useEffect(() => {
+  if (!enabled) return
+  const unsubscribe = subscribe(target)
+  return unsubscribe
+}, [enabled, target])
+```
+
+Vue 生命周期等能力依赖活动的组件或 effect scope，应按其上下文约束调用。React use 等特殊 API 有单独规则，本章不把特殊例外推广到普通 Hooks。
+
+## 参数变化怎样传入逻辑
+
+Vue composable 接收普通值，只能读到该次传入的值；需要持续响应参数变化，可接收 ref 或 getter，再通过 toValue 规范化。toValue 为 Vue 3.3+ API，必须在追踪上下文中调用才能收集相应依赖。
+
+```ts title="useDocumentTitle.ts · Vue"
+import { toValue, watchEffect, type MaybeRefOrGetter } from 'vue'
+export function useDocumentTitle(title: MaybeRefOrGetter<string>) {
+  watchEffect(() => { document.title = toValue(title) })
+}
+// 调用：useDocumentTitle(() => props.name)
+```
+
+```tsx title="useDocumentTitle.ts · React"
+import { useEffect } from 'react'
+export function useDocumentTitle(title: string) {
+  useEffect(() => { document.title = title }, [title])
+}
+// 渲染时调用：useDocumentTitle(name)
+```
+
+这里的 title 示例假设它是页面标题的唯一管理者；需要恢复旧标题时，应在各自的清理回调中恢复。React 每次调用收到当前渲染参数，异步回调仍受快照与依赖规则约束。
+
+## 返回接口与资源释放
+
+Vue 常返回“包含 refs 的普通对象”，方便解构。返回 reactive 对象再解构基本类型字段，可能失去代理读取连接。React 返回值属于当前渲染，解构不会破坏什么自动依赖图；但每次创建的函数或对象引用可能变化，调用方若将它们用作依赖，需明确稳定性约定，而非一律 useCallback。
+
+```ts title="Vue：作用域内窗口订阅"
+import { onMounted, onScopeDispose, ref } from 'vue'
+export function useWindowWidth() {
+  const width = ref<number | null>(null)
+  const update = () => { width.value = window.innerWidth }
+  onMounted(() => { update(); window.addEventListener('resize', update) })
+  onScopeDispose(() => window.removeEventListener('resize', update))
+  return width
+}
+```
+
+React 的对应实现已在 E08 源码中展示。Hook 谁建立资源，谁返回 cleanup；不要要求每个使用者记住清理内部定时器。
+
+## 从复用走向共享
+
+把 ref 移到模块外，或导出一个全局 store，可以让使用者访问同一份状态，但同时改变生命周期、隔离和重置方式。先考虑父级提升或 Context；确有广泛共享需求时，再使用 [Pinia / Zustand](/docs/07-stores)。请求结果则优先考虑 [Query](/docs/08-requests)，不复制到第二个客户端 store。
+
+## 参考来源
+
+- [Vue：组合式函数](https://cn.vuejs.org/guide/reusability/composables.html)、[toValue](https://cn.vuejs.org/api/reactivity-utilities.html#tovalue)
+- [React：自定义 Hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)、[Hooks 规则](https://react.dev/reference/rules/rules-of-hooks)

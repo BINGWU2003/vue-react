@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "组件通信与所有权",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F04.html"
+  },
+  "lanes": [
+    {
+      "id": "down",
+      "label": "值与内容向下"
+    },
+    {
+      "id": "up",
+      "label": "通知与跨层"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "down-0",
+      "lane": "down",
+      "col": 0,
+      "type": "backend",
+      "label": "父级所有者",
+      "sublabel": "持有唯一状态",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "down-1",
+      "lane": "down",
+      "col": 1,
+      "type": "backend",
+      "label": "props 传值",
+      "sublabel": "只读输入约定",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "down-2",
+      "lane": "down",
+      "col": 2,
+      "type": "backend",
+      "label": "子组件显示",
+      "sublabel": "组合 children",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "down-3",
+      "lane": "down",
+      "col": 3,
+      "type": "backend",
+      "label": "必要命令",
+      "sublabel": "ref 聚焦或滚动",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "up-0",
+      "lane": "up",
+      "col": 0,
+      "type": "backend",
+      "label": "用户输入",
+      "sublabel": "子组件捕获事件",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "up-1",
+      "lane": "up",
+      "col": 1,
+      "type": "backend",
+      "label": "通知父级",
+      "sublabel": "emit 或回调",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "up-2",
+      "lane": "up",
+      "col": 2,
+      "type": "backend",
+      "label": "父级更新",
+      "sublabel": "维护数据约束",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "up-3",
+      "lane": "up",
+      "col": 3,
+      "type": "backend",
+      "label": "跨层传值",
+      "sublabel": "inject 或 Context",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "down-edge-0",
+      "from": "down-0",
+      "to": "down-1"
+    },
+    {
+      "id": "down-edge-1",
+      "from": "down-1",
+      "to": "down-2"
+    },
+    {
+      "id": "down-edge-2",
+      "from": "down-2",
+      "to": "down-3"
+    },
+    {
+      "id": "up-edge-0",
+      "from": "up-0",
+      "to": "up-1"
+    },
+    {
+      "id": "up-edge-1",
+      "from": "up-1",
+      "to": "up-2"
+    },
+    {
+      "id": "up-edge-2",
+      "from": "up-2",
+      "to": "up-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "下行的输入通知应回到状态所有者，再由新的 props 流向子组件。命令式 ref 用于聚焦等有限能力。"
+      ]
+    }
+  ]
+}

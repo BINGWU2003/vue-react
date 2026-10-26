@@ -1,0 +1,166 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "逻辑复用与状态共享",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F05.html"
+  },
+  "lanes": [
+    {
+      "id": "a",
+      "label": "独立实例 A"
+    },
+    {
+      "id": "b",
+      "label": "独立实例 B"
+    },
+    {
+      "id": "shared",
+      "label": "显式共享"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "a-0",
+      "lane": "a",
+      "col": 0,
+      "type": "backend",
+      "label": "组件 A 调用",
+      "sublabel": "复用同一逻辑",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "a-1",
+      "lane": "a",
+      "col": 1,
+      "type": "backend",
+      "label": "创建状态 A",
+      "sublabel": "组件内的状态",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "a-2",
+      "lane": "a",
+      "col": 2,
+      "type": "backend",
+      "label": "操作 A",
+      "sublabel": "只更新 A",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "b-0",
+      "lane": "b",
+      "col": 0,
+      "type": "backend",
+      "label": "组件 B 调用",
+      "sublabel": "复用同一逻辑",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "b-1",
+      "lane": "b",
+      "col": 1,
+      "type": "backend",
+      "label": "创建状态 B",
+      "sublabel": "组件内的状态",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "b-2",
+      "lane": "b",
+      "col": 2,
+      "type": "backend",
+      "label": "操作 B",
+      "sublabel": "只更新 B",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "shared-0",
+      "lane": "shared",
+      "col": 0,
+      "type": "backend",
+      "label": "公共容器",
+      "sublabel": "父级或外部 store",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "shared-1",
+      "lane": "shared",
+      "col": 1,
+      "type": "backend",
+      "label": "订阅同一状态",
+      "sublabel": "共同的数据来源",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "shared-2",
+      "lane": "shared",
+      "col": 2,
+      "type": "backend",
+      "label": "操作容器",
+      "sublabel": "所有消费者同步",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "a-edge-0",
+      "from": "a-0",
+      "to": "a-1"
+    },
+    {
+      "id": "a-edge-1",
+      "from": "a-1",
+      "to": "a-2"
+    },
+    {
+      "id": "b-edge-0",
+      "from": "b-0",
+      "to": "b-1"
+    },
+    {
+      "id": "b-edge-1",
+      "from": "b-1",
+      "to": "b-2"
+    },
+    {
+      "id": "shared-edge-0",
+      "from": "shared-0",
+      "to": "shared-1"
+    },
+    {
+      "id": "shared-edge-1",
+      "from": "shared-1",
+      "to": "shared-2"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "相同逻辑函数不连接 A、B 的状态。只有明确移入公共容器的状态才会在消费者之间共享。"
+      ]
+    }
+  ]
+}

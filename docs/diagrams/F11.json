@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "组件身份与更新边界",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F11.html"
+  },
+  "lanes": [
+    {
+      "id": "identity",
+      "label": "身份判断"
+    },
+    {
+      "id": "update",
+      "label": "一次更新"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "identity-0",
+      "lane": "identity",
+      "col": 0,
+      "type": "backend",
+      "label": "类型位置与 key",
+      "sublabel": "同级协调的身份",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "identity-1",
+      "lane": "identity",
+      "col": 1,
+      "type": "backend",
+      "label": "身份相同",
+      "sublabel": "保留组件状态",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "identity-2",
+      "lane": "identity",
+      "col": 2,
+      "type": "backend",
+      "label": "身份改变",
+      "sublabel": "清理并创建实例",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "identity-3",
+      "lane": "identity",
+      "col": 3,
+      "type": "backend",
+      "label": "新状态来源",
+      "sublabel": "重新运行初始化",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "update-0",
+      "lane": "update",
+      "col": 0,
+      "type": "backend",
+      "label": "请求渲染",
+      "sublabel": "状态或上层变化",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "update-1",
+      "lane": "update",
+      "col": 1,
+      "type": "backend",
+      "label": "执行与协调",
+      "sublabel": "可能被中断或重试",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "update-2",
+      "lane": "update",
+      "col": 2,
+      "type": "backend",
+      "label": "提交结果",
+      "sublabel": "必要的 DOM 修改",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "update-3",
+      "lane": "update",
+      "col": 3,
+      "type": "backend",
+      "label": "同步外部系统",
+      "sublabel": "Effect setup/cleanup",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "identity-edge-0",
+      "from": "identity-0",
+      "to": "identity-1"
+    },
+    {
+      "id": "identity-edge-1",
+      "from": "identity-1",
+      "to": "identity-2"
+    },
+    {
+      "id": "identity-edge-2",
+      "from": "identity-2",
+      "to": "identity-3"
+    },
+    {
+      "id": "update-edge-0",
+      "from": "update-0",
+      "to": "update-1"
+    },
+    {
+      "id": "update-edge-1",
+      "from": "update-1",
+      "to": "update-2"
+    },
+    {
+      "id": "update-edge-2",
+      "from": "update-2",
+      "to": "update-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "身份决定状态是否保留。函数执行、提交、DOM mutation 和 Effect 是不同观察点，不能只用 console 次数衡量性能。"
+      ]
+    }
+  ]
+}

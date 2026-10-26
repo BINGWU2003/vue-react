@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1128 404" data-layout-contract="readable-v2" role="img" lang="zh-CN" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+        <title id="archify-diagram-title">两端状态更新总览</title>
+        <desc id="archify-diagram-description">由 Archify 生成的工作流图。</desc>
+        <!-- Definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
+          </pattern>
+        </defs><style>svg{font-family:system-ui,'Microsoft YaHei',sans-serif;background:#fafbf9}.t-primary{fill:#172e25}.t-muted,.t-dim{fill:#52665c}.c-grid{fill:none;stroke:#d9e2dc}.c-lane{fill:#eef3ef;stroke:#cbd8cf}.c-mask{fill:#fafbf9}.c-frontend{fill:#e6f2e9;stroke:#568275}.c-backend{fill:#e8eef7;stroke:#657f9d}.c-database{fill:#eee8f7;stroke:#927ab1}.c-security{fill:#f8e9df;stroke:#b7825b}.a-default,.a-emphasis,.a-security,.a-dashed{fill:none;stroke:#657b6e}.a-dashed{stroke-dasharray:4 4}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#657b6e}.c-label{fill:#fafbf9}.t-edge{fill:#344f40}@media not all{svg{background:#17201b}.t-primary{fill:#e5eee8}.t-muted,.t-dim,.t-edge{fill:#b4c7bb}.c-grid{stroke:#35463a}.c-lane{fill:#1d2a22;stroke:#3b5042}.c-mask,.c-label{fill:#17201b}.c-frontend{fill:#253b2f;stroke:#80b594}.c-backend{fill:#293643;stroke:#8ba8c9}.a-default,.a-emphasis,.a-security,.a-dashed{stroke:#aac3b3}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#aac3b3}}.t-edge-emphasis,.t-edge-default{fill:#344f40}@media not all{.t-edge-emphasis,.t-edge-default{fill:#b4c7bb}}</style>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Swimlanes -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="1072" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="74" class="t-dim" font-size="13" font-weight="600">01 / Vue</text>
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="176" width="1072" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="198" class="t-dim" font-size="13" font-weight="600">02 / React</text>
+
+        <!-- Phase headers -->
+
+
+        <!-- Workflow groups -->
+
+
+        <!-- Edge paths -->
+        <path data-edge-from="react-0" data-edge-to="react-1" data-edge-key="0" data-edge-id="react-edge-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="220,243;248,243" d="M 220 243 L 248 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="react-1" data-edge-to="react-2" data-edge-key="1" data-edge-id="react-edge-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="420,243;448,243" d="M 420 243 L 448 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="react-2" data-edge-to="react-3" data-edge-key="2" data-edge-id="react-edge-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="620,243;648,243" d="M 620 243 L 648 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="react-3" data-edge-to="react-4" data-edge-key="3" data-edge-id="react-edge-3" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="820,243;848,243" d="M 820 243 L 848 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="vue-0" data-edge-to="vue-1" data-edge-key="4" data-edge-id="vue-edge-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="220,119;248,119" d="M 220 119 L 248 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="vue-1" data-edge-to="vue-2" data-edge-key="5" data-edge-id="vue-edge-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="420,119;448,119" d="M 420 119 L 448 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="vue-2" data-edge-to="vue-3" data-edge-key="6" data-edge-id="vue-edge-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="620,119;648,119" d="M 620 119 L 648 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="vue-3" data-edge-to="vue-4" data-edge-key="7" data-edge-id="vue-edge-3" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="820,119;848,119" d="M 820 119 L 848 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+
+        <!-- Nodes -->
+        <g id="node-vue-0" data-node-id="vue-0" data-node-label="修改响应值" aria-label="聚焦修改响应值，ref 或 Proxy, Vue" data-node-kind="frontend" data-node-sublabel="ref 或 Proxy" data-node-context="Vue">
+          <title>修改响应值 · ref 或 Proxy · Vue</title>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-frontend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">修改响应值</text>
+          <text data-detail="context" x="134" y="124" class="t-muted" font-size="12" text-anchor="middle">ref 或 Proxy</text>
+        </g>
+
+        <g id="node-vue-1" data-node-id="vue-1" data-node-label="触发依赖" aria-label="聚焦触发依赖，相关 effect, Vue" data-node-kind="frontend" data-node-sublabel="相关 effect" data-node-context="Vue">
+          <title>触发依赖 · 相关 effect · Vue</title>
+          <rect x="248" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="248" y="86" width="172" height="66" rx="6" class="c-frontend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="334" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">触发依赖</text>
+          <text data-detail="context" x="334" y="124" class="t-muted" font-size="12" text-anchor="middle">相关 effect</text>
+        </g>
+
+        <g id="node-vue-2" data-node-id="vue-2" data-node-label="安排更新" aria-label="聚焦安排更新，队列与批处理, Vue" data-node-kind="frontend" data-node-sublabel="队列与批处理" data-node-context="Vue">
+          <title>安排更新 · 队列与批处理 · Vue</title>
+          <rect x="448" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="448" y="86" width="172" height="66" rx="6" class="c-frontend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="534" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">安排更新</text>
+          <text data-detail="context" x="534" y="124" class="t-muted" font-size="12" text-anchor="middle">队列与批处理</text>
+        </g>
+
+        <g id="node-vue-3" data-node-id="vue-3" data-node-label="执行渲染" aria-label="聚焦执行渲染，render effect, Vue" data-node-kind="frontend" data-node-sublabel="render effect" data-node-context="Vue">
+          <title>执行渲染 · render effect · Vue</title>
+          <rect x="648" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="648" y="86" width="172" height="66" rx="6" class="c-frontend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="734" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">执行渲染</text>
+          <text data-detail="context" x="734" y="124" class="t-muted" font-size="12" text-anchor="middle">render effect</text>
+        </g>
+
+        <g id="node-vue-4" data-node-id="vue-4" data-node-label="提交更新" aria-label="聚焦提交更新，patch DOM, Vue" data-node-kind="frontend" data-node-sublabel="patch DOM" data-node-context="Vue">
+          <title>提交更新 · patch DOM · Vue</title>
+          <rect x="848" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="848" y="86" width="172" height="66" rx="6" class="c-frontend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="934" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">提交更新</text>
+          <text data-detail="context" x="934" y="124" class="t-muted" font-size="12" text-anchor="middle">patch DOM</text>
+        </g>
+
+        <g id="node-react-0" data-node-id="react-0" data-node-label="调用 setter" aria-label="聚焦调用 setter，提交更新意图, React" data-node-kind="backend" data-node-sublabel="提交更新意图" data-node-context="React">
+          <title>调用 setter · 提交更新意图 · React</title>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">调用 setter</text>
+          <text data-detail="context" x="134" y="248" class="t-muted" font-size="12" text-anchor="middle">提交更新意图</text>
+        </g>
+
+        <g id="node-react-1" data-node-id="react-1" data-node-label="进入更新队列" aria-label="聚焦进入更新队列，状态快照不变, React" data-node-kind="backend" data-node-sublabel="状态快照不变" data-node-context="React">
+          <title>进入更新队列 · 状态快照不变 · React</title>
+          <rect x="248" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="248" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="334" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">进入更新队列</text>
+          <text data-detail="context" x="334" y="248" class="t-muted" font-size="12" text-anchor="middle">状态快照不变</text>
+        </g>
+
+        <g id="node-react-2" data-node-id="react-2" data-node-label="调度渲染" aria-label="聚焦调度渲染，批处理与优先级, React" data-node-kind="backend" data-node-sublabel="批处理与优先级" data-node-context="React">
+          <title>调度渲染 · 批处理与优先级 · React</title>
+          <rect x="448" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="448" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="534" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">调度渲染</text>
+          <text data-detail="context" x="534" y="248" class="t-muted" font-size="12" text-anchor="middle">批处理与优先级</text>
+        </g>
+
+        <g id="node-react-3" data-node-id="react-3" data-node-label="调用组件" aria-label="聚焦调用组件，协调界面描述, React" data-node-kind="backend" data-node-sublabel="协调界面描述" data-node-context="React">
+          <title>调用组件 · 协调界面描述 · React</title>
+          <rect x="648" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="648" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="734" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">调用组件</text>
+          <text data-detail="context" x="734" y="248" class="t-muted" font-size="12" text-anchor="middle">协调界面描述</text>
+        </g>
+
+        <g id="node-react-4" data-node-id="react-4" data-node-label="提交更新" aria-label="聚焦提交更新，必要的 DOM 变更, React" data-node-kind="backend" data-node-sublabel="必要的 DOM 变更" data-node-context="React">
+          <title>提交更新 · 必要的 DOM 变更 · React</title>
+          <rect x="848" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="848" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="934" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">提交更新</text>
+          <text data-detail="context" x="934" y="248" class="t-muted" font-size="12" text-anchor="middle">必要的 DOM 变更</text>
+        </g>
+
+        <!-- Edge labels -->
+
+
+
+
+
+
+
+
+
+        <!-- Legend -->
+        <g data-legend="" data-legend-bridge="">
+          <text x="20" y="304" class="t-primary" font-size="12" font-weight="650">图例</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Vue" data-legend-x="20" data-legend-baseline="324" data-legend-width="78">
+            <rect x="20" y="316" width="14" height="9" rx="2" class="c-frontend" stroke-width="1"/>
+            <text x="42" y="324" class="t-muted" font-size="11" font-weight="500">Vue</text>
+          </g>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="React" data-legend-x="105" data-legend-baseline="324" data-legend-width="87">
+            <rect x="105" y="316" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="127" y="324" class="t-muted" font-size="11" font-weight="500">React</text>
+          </g>
+        </g>
+      </svg>

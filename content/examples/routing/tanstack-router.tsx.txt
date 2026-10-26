@@ -1,0 +1,65 @@
+import { createRoot } from 'react-dom/client'
+import { useState } from 'react'
+import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider, notFound, useBlocker } from '@tanstack/react-router'
+import { loadProducts, parsePage, products } from './data'
+
+const rootRoute = createRootRoute({
+  component: () => <main><h1>商品</h1><Link to="/products" search={{ q: '', page: 1 }}>商品列表</Link><Outlet /></main>,
+  notFoundComponent: () => <p>404：页面或商品不存在</p>,
+  errorComponent: ({ error }) => <p role="alert">{error instanceof Error ? error.message : '页面加载失败'}</p>,
+})
+const productsRoute = createRoute({ getParentRoute: () => rootRoute, path: 'products', component: Outlet })
+const listRoute = createRoute({
+  getParentRoute: () => productsRoute,
+  path: '/',
+  validateSearch: (search: Record<string, unknown>) => ({ q: typeof search.q === 'string' ? search.q : '', page: parsePage(search.page) }),
+  loaderDeps: ({ search }) => ({ q: search.q, page: search.page }),
+  loader: ({ deps, abortController }) => loadProducts(deps.q, deps.page, abortController.signal),
+  pendingMs: 0,
+  pendingComponent: () => <p role="status">导航加载中…</p>,
+  component: ProductList,
+})
+function ProductList() {
+  const { q, page } = listRoute.useSearch()
+  const items = listRoute.useLoaderData()
+  const navigate = listRoute.useNavigate()
+  return <>
+    <label>搜索 <input value={q} onChange={e => void navigate({ search: { q: e.target.value, page: 1 }, replace: true })} /></label>
+    <ul>{items.map(p => <li key={p.id}><Link to="/products/$id" params={{ id: String(p.id) }}>{p.name}</Link></li>)}</ul>
+    <button disabled={page === 1} onClick={() => void navigate({ search: { q, page: page - 1 } })}>上一页</button>
+    <button onClick={() => void navigate({ search: { q, page: page + 1 } })}>下一页</button>
+  </>
+}
+const detailRoute = createRoute({
+  getParentRoute: () => productsRoute,
+  path: '$id',
+  loader: ({ params }) => {
+    const id = Number(params.id)
+    const product = Number.isSafeInteger(id) && products.find(p => p.id === id)
+    if (!product) throw notFound()
+    return product
+  },
+  component: ProductDetail,
+})
+function ProductDetail() {
+  const product = detailRoute.useLoaderData()
+  return <section><h2>{product.name}</h2><Link to="/products/$id/edit" params={{ id: String(product.id) }}>编辑</Link><Outlet /></section>
+}
+const editRoute = createRoute({
+  getParentRoute: () => detailRoute,
+  path: 'edit',
+  component: EditProduct,
+})
+function EditProduct() {
+  const { id } = editRoute.useParams()
+  const [dirty, setDirty] = useState(false)
+  const blocker = useBlocker({ shouldBlockFn: () => dirty, withResolver: true })
+  return <section><label>编辑商品 {id}<input onChange={() => setDirty(true)} /></label><button onClick={() => setDirty(false)}>模拟保存</button>
+    {blocker.status === 'blocked' ? <div><p>放弃修改？</p><button onClick={blocker.proceed}>离开</button><button onClick={blocker.reset}>继续编辑</button></div> : null}
+  </section>
+}
+const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: '/', component: () => <Link to="/products" search={{ q: '', page: 1 }}>进入商品列表</Link> })
+const routeTree = rootRoute.addChildren([indexRoute, productsRoute.addChildren([listRoute, detailRoute.addChildren([editRoute])])])
+const router = createRouter({ routeTree, defaultPreload: 'intent' })
+declare module '@tanstack/react-router' { interface Register { router: typeof router } }
+createRoot(document.getElementById('root')!).render(<RouterProvider router={router} />)

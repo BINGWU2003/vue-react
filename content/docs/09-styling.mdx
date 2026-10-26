@@ -1,0 +1,138 @@
+---
+title: 09 · CSS 与样式组织
+description: 用同一张商品卡片比较普通 CSS、Scoped CSS、CSS Modules、Tailwind 和主题变量。
+---
+
+## 实际需求：同一卡片的状态与主题
+
+一张笔记本卡片，支持选中、紧凑模式、深浅主题，并在窄屏改变布局。框架负责把状态表达成 class/style，层叠、继承和媒体查询仍是 CSS 的能力。
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```vue title="ProductCard.vue · Scoped CSS"
+<script setup lang="ts">
+import { ref } from 'vue'
+const selected = ref(true)
+const compact = ref(false)
+const dark = ref(false)
+</script>
+<template>
+  <label><input v-model="selected" type="checkbox" />选中</label>
+  <label><input v-model="compact" type="checkbox" />紧凑</label>
+  <button @click="dark = !dark">切换主题</button>
+  <article class="card" :class="{ selected, compact, dark }">
+    <strong>同一张商品卡片</strong><p>笔记本 · ¥20</p>
+  </article>
+</template>
+<style scoped>
+.card { --accent: #568275; --surface: #f2f8f5; --text: #18372a;
+  border: 1px solid var(--accent); border-radius: 12px; padding: 24px;
+  background: var(--surface); color: var(--text); }
+.selected { box-shadow: inset 4px 0 var(--accent); }
+.compact { padding: 12px; }
+.dark { --accent: #9bd7bd; --surface: #19372c; --text: #e2f2e9; }
+</style>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="styling.tsx · 导入"
+import { useState, type CSSProperties } from 'react'
+import styles from './styling.module.css'
+```
+
+<include lang="tsx" meta='title="styling.tsx · 实际演示源码"'>../../components/examples/styling.tsx#styling</include>
+
+<include lang="css" meta='title="styling.module.css"'>../../components/examples/styling.module.css</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E14" title="多种样式方案与主题">在 CSS Modules、普通 CSS、Tailwind 间切换，保持相同卡片外观；再改变选中、紧凑和主题。Vue scoped 只展示代码，作用域机制不在 React 中模拟。</Demo>
+
+## 普通 CSS 与局部作用域
+
+普通 CSS 的选择器可匹配整份文档，不会因为文件从组件导入就自动隔离。React `import './card.css'`、Vue 不加 scoped 的 style 都要考虑全局类名、导入顺序与选择器范围。
+
+E14 的普通 CSS 版本使用以下全局规则。工程中若命名过于通用，例如 `.card`、`.title`，可能与其他组件碰撞。
+
+```css title="普通 CSS"
+.example-plain-card { border: 1px solid var(--example-accent); border-radius: 12px;
+  padding: 24px; background: var(--example-background); color: var(--example-text); }
+.example-plain-card.example-selected { box-shadow: inset 4px 0 var(--example-accent); }
+.example-plain-card.example-compact { padding: 12px; }
+```
+
+Vue scoped 编译器会给选择器与组件元素附加作用域属性，例如 `.card[data-v-xxxx]`。它不是 Shadow DOM；子组件根节点可同时受父级 scoped 布局规则与自身 scoped 样式影响，深层内部节点则需要明确的深度入口。插槽内容和 v-html 内容另有边界。
+
+CSS Modules 通常把局部类名编译为独特名称，通过 styles.card 引用；它不是给每条选择器添加 Vue 的作用域属性。React 本身没有 `<style scoped>` 语法。
+
+```vue title="Vue CSS Modules 的引用方式"
+<template><article :class="[$style.card, selected && $style.selected]">笔记本</article></template>
+<script setup lang="ts">
+import { ref } from 'vue'
+const selected = ref(true)
+</script>
+<style module>
+.card { padding: 24px; }
+.selected { border-left: 4px solid #568275; }
+</style>
+```
+
+## 动态类、内联值与 CSS 变量
+
+有限状态（选中、紧凑）优先用类名，连续数值（进度、位置）可用 style 或 CSS 变量。Vue 可 `:class="['card', { selected }]"`；React 可以组合完整字符串。React style 使用驼峰属性，CSS 自定义属性的 TypeScript 类型可用 CSSProperties 断言或专门扩展类型。
+
+```vue title="Vue SFC CSS v-bind"
+<script setup lang="ts">
+const color = '#568275'
+</script>
+<template><div class="accent">强调内容</div></template>
+<style scoped>.accent { color: v-bind(color); }</style>
+```
+
+Vue 编译器会把 CSS v-bind 接到生成的自定义属性。React 中可以显式写 `style={{ '--accent': color } as CSSProperties}` 再由 CSS 读取；不要在 JSX style 中写 CSS 字符串。
+
+## Tailwind：完整类名与状态变体
+
+两端都能使用工具类。Vue 写 class，React 写 className；hover、focus-visible、响应断点和 dark 等变体属于 Tailwind 的编译约定，不是 Vue/React 的响应系统。
+
+```vue title="Vue：替换前文卡片的 article（复用同一组 refs）"
+<article class="rounded-xl border border-[var(--accent)] bg-[var(--surface)] text-[var(--text)]"
+  :class="[compact ? 'p-3' : 'p-6', selected ? 'shadow-[inset_4px_0_var(--accent)]' : '']"
+  :style="{ '--accent': dark ? '#9bd7bd' : '#568275', '--surface': dark ? '#19372c' : '#f2f8f5', '--text': dark ? '#e2f2e9' : '#18372a' }">
+  <strong>同一张商品卡片</strong><p>笔记本 · ¥20</p>
+</article>
+```
+
+普通 CSS 版本可复用前文 SFC 的模板与规则，移除 scoped 并选用独特的业务类名；它与 scoped 版本的视觉可以一致，区别在选择器作用范围。
+
+```tsx title="可静态检测的完整类名"
+const spacing = compact ? 'p-3' : 'p-6'
+// 避免 `p-${size}`：源码扫描不运行 JavaScript 推导所有类名。
+// 连续动态值可通过 style 写 CSS 变量，再引用固定工具类。
+```
+
+Tailwind 4 使用 CSS 配置与工具检测能力；迁移旧版本教程时不要直接复制 v3 配置文件。深浅主题的自定义激活方式应与承载项目约定保持一致。
+
+## 主题与响应式布局
+
+CSS 变量放在需要覆盖的主题祖先上，局部变量只向真实 DOM 后代继承。Portal/Teleport 移出祖先后，逻辑 Context 仍可能可达，CSS 变量却不再沿原先祖先继承，见 [第 10 章](/docs/10-library-styles)。E14 的主题只影响自己的卡片。
+
+```css title="布局断点不依赖框架"
+.product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 640px) { .product-grid { grid-template-columns: 1fr; } }
+```
+
+Sass 解决预处理、变量、嵌套、mixins 等组织需求，不自动提供组件隔离；仍需 scoped、Modules 或命名约定。CSS-in-JS 有运行时注入和静态提取等不同思路，要权衡动态主题、依赖和运行成本，不是 React 必选项。
+
+## 使用建议与参考
+
+团队先选一个主要作用域方案；有限状态使用可检索的类名，主题使用稳定变量。遇到覆盖问题先检查实际选择器和 DOM，不先堆 important。
+
+- [Vue：SFC CSS](https://cn.vuejs.org/api/sfc-css-features.html)、[class 与 style](https://cn.vuejs.org/guide/essentials/class-and-style.html)
+- [React：style](https://react.dev/reference/react-dom/components/common#applying-css-styles)、[CSS Modules](https://github.com/css-modules/css-modules)
+- [Tailwind：检测类名](https://tailwindcss.com/docs/detecting-classes-in-source-files)、[主题](https://tailwindcss.com/docs/theme)

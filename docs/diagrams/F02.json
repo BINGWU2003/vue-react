@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "派生数据与缓存",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F02.html"
+  },
+  "lanes": [
+    {
+      "id": "computed",
+      "label": "Vue computed"
+    },
+    {
+      "id": "memo",
+      "label": "React"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "computed-0",
+      "lane": "computed",
+      "col": 0,
+      "type": "backend",
+      "label": "源状态变化",
+      "sublabel": "触发相关依赖",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "computed-1",
+      "lane": "computed",
+      "col": 1,
+      "type": "backend",
+      "label": "缓存失效",
+      "sublabel": "标记需要重算",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "computed-2",
+      "lane": "computed",
+      "col": 2,
+      "type": "backend",
+      "label": "读取派生值",
+      "sublabel": "按需计算",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "computed-3",
+      "lane": "computed",
+      "col": 3,
+      "type": "backend",
+      "label": "获得结果",
+      "sublabel": "依赖不变则复用",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "memo-0",
+      "lane": "memo",
+      "col": 0,
+      "type": "backend",
+      "label": "状态更新",
+      "sublabel": "请求新渲染",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "memo-1",
+      "lane": "memo",
+      "col": 1,
+      "type": "backend",
+      "label": "渲染时计算",
+      "sublabel": "默认直接推导",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "memo-2",
+      "lane": "memo",
+      "col": 2,
+      "type": "backend",
+      "label": "按需 useMemo",
+      "sublabel": "显式比较依赖",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "memo-3",
+      "lane": "memo",
+      "col": 3,
+      "type": "backend",
+      "label": "获得结果",
+      "sublabel": "正确性独立于缓存",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "computed-edge-0",
+      "from": "computed-0",
+      "to": "computed-1"
+    },
+    {
+      "id": "computed-edge-1",
+      "from": "computed-1",
+      "to": "computed-2"
+    },
+    {
+      "id": "computed-edge-2",
+      "from": "computed-2",
+      "to": "computed-3"
+    },
+    {
+      "id": "memo-edge-0",
+      "from": "memo-0",
+      "to": "memo-1"
+    },
+    {
+      "id": "memo-edge-1",
+      "from": "memo-1",
+      "to": "memo-2"
+    },
+    {
+      "id": "memo-edge-2",
+      "from": "memo-2",
+      "to": "memo-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "派生值从源状态流向界面，不再复制一份总价状态。两条路径的缓存目的和依赖来源不同。"
+      ]
+    }
+  ]
+}

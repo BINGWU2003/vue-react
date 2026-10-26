@@ -8,7 +8,7 @@ export function baseOptions(): BaseLayoutProps {
     },
     links: [
       { text: '文档', url: '/docs', active: 'nested-url' },
-      { text: '灵感记录', url: '/docs/notes' },
+      { text: '概念速查', url: '/docs#概念速查' },
     ],
   };
 }

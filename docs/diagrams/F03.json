@@ -1,0 +1,167 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "副作用建立与清理",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F03.html"
+  },
+  "lanes": [
+    {
+      "id": "cycle",
+      "label": "正常同步周期"
+    },
+    {
+      "id": "end",
+      "label": "资源边界"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "cycle-0",
+      "lane": "cycle",
+      "col": 0,
+      "type": "backend",
+      "label": "完成提交",
+      "sublabel": "观察已提交界面",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "cycle-1",
+      "lane": "cycle",
+      "col": 1,
+      "type": "backend",
+      "label": "建立同步",
+      "sublabel": "Effect setup",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "cycle-2",
+      "lane": "cycle",
+      "col": 2,
+      "type": "backend",
+      "label": "依赖变化",
+      "sublabel": "比较声明的依赖",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "cycle-3",
+      "lane": "cycle",
+      "col": 3,
+      "type": "backend",
+      "label": "清理旧同步",
+      "sublabel": "旧 cleanup",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "cycle-4",
+      "lane": "cycle",
+      "col": 4,
+      "type": "backend",
+      "label": "重新建立",
+      "sublabel": "新 setup",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "end-0",
+      "lane": "end",
+      "col": 0,
+      "type": "backend",
+      "label": "开发检查",
+      "sublabel": "额外 setup/cleanup",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "end-1",
+      "lane": "end",
+      "col": 1,
+      "type": "backend",
+      "label": "验证对称",
+      "sublabel": "资源可安全重建",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "end-2",
+      "lane": "end",
+      "col": 2,
+      "type": "backend",
+      "label": "组件卸载",
+      "sublabel": "离开当前界面",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "end-3",
+      "lane": "end",
+      "col": 3,
+      "type": "backend",
+      "label": "最终清理",
+      "sublabel": "移除监听和定时器",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "cycle-edge-0",
+      "from": "cycle-0",
+      "to": "cycle-1"
+    },
+    {
+      "id": "cycle-edge-1",
+      "from": "cycle-1",
+      "to": "cycle-2"
+    },
+    {
+      "id": "cycle-edge-2",
+      "from": "cycle-2",
+      "to": "cycle-3"
+    },
+    {
+      "id": "cycle-edge-3",
+      "from": "cycle-3",
+      "to": "cycle-4"
+    },
+    {
+      "id": "end-edge-0",
+      "from": "end-0",
+      "to": "end-1"
+    },
+    {
+      "id": "end-edge-1",
+      "from": "end-1",
+      "to": "end-2"
+    },
+    {
+      "id": "end-edge-2",
+      "from": "end-2",
+      "to": "end-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "上行表示提交后的同步周期；下行区分开发 Strict Mode 检查与最终卸载。依赖变化也会执行清理。"
+      ]
+    }
+  ]
+}

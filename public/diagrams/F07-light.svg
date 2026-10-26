@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1168 404" data-layout-contract="readable-v2" role="img" lang="zh-CN" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+        <title id="archify-diagram-title">状态放置决策</title>
+        <desc id="archify-diagram-description">由 Archify 生成的工作流图。</desc>
+        <!-- Definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
+          </pattern>
+        </defs><style>svg{font-family:system-ui,'Microsoft YaHei',sans-serif;background:#fafbf9}.t-primary{fill:#172e25}.t-muted,.t-dim{fill:#52665c}.c-grid{fill:none;stroke:#d9e2dc}.c-lane{fill:#eef3ef;stroke:#cbd8cf}.c-mask{fill:#fafbf9}.c-frontend{fill:#e6f2e9;stroke:#568275}.c-backend{fill:#e8eef7;stroke:#657f9d}.c-database{fill:#eee8f7;stroke:#927ab1}.c-security{fill:#f8e9df;stroke:#b7825b}.a-default,.a-emphasis,.a-security,.a-dashed{fill:none;stroke:#657b6e}.a-dashed{stroke-dasharray:4 4}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#657b6e}.c-label{fill:#fafbf9}.t-edge{fill:#344f40}@media not all{svg{background:#17201b}.t-primary{fill:#e5eee8}.t-muted,.t-dim,.t-edge{fill:#b4c7bb}.c-grid{stroke:#35463a}.c-lane{fill:#1d2a22;stroke:#3b5042}.c-mask,.c-label{fill:#17201b}.c-frontend{fill:#253b2f;stroke:#80b594}.c-backend{fill:#293643;stroke:#8ba8c9}.a-default,.a-emphasis,.a-security,.a-dashed{stroke:#aac3b3}.m-default,.m-emphasis,.m-security,.m-dashed{fill:#aac3b3}}.t-edge-emphasis,.t-edge-default{fill:#344f40}@media not all{.t-edge-emphasis,.t-edge-default{fill:#b4c7bb}}</style>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Swimlanes -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="1112" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="74" class="t-dim" font-size="13" font-weight="600">01 / 依次判断</text>
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-1" x="40" y="176" width="1112" height="104" rx="10" class="c-lane" stroke-width="1"/>
+        <text x="54" y="198" class="t-dim" font-size="13" font-weight="600">02 / 对应归属</text>
+
+        <!-- Phase headers -->
+
+
+        <!-- Workflow groups -->
+
+
+        <!-- Edge paths -->
+        <path data-edge-from="question-0" data-edge-to="owner-0" data-edge-label="是" data-edge-key="0" data-edge-id="decision-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="48,119;20,119;20,243;48,243" d="M 48 119 L 20 119 L 20 243 L 48 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="question-1" data-edge-to="owner-1" data-edge-label="是" data-edge-key="1" data-edge-id="decision-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="344,152;344,210" d="M 344 152 L 344 210" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="question-2" data-edge-to="owner-2" data-edge-label="是" data-edge-key="2" data-edge-id="decision-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="554,152;554,210" d="M 554 152 L 554 210" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="question-3" data-edge-to="owner-3" data-edge-label="是" data-edge-key="3" data-edge-id="decision-3" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="764,152;764,210" d="M 764 152 L 764 210" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="question-4" data-edge-to="owner-4" data-edge-label="归入" data-edge-key="4" data-edge-id="decision-4" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="974,152;974,210" d="M 974 152 L 974 210" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="question-0" data-edge-to="question-1" data-edge-label="否" data-edge-key="5" data-edge-id="question-edge-0" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="220,119;258,119" d="M 220 119 L 258 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="question-1" data-edge-to="question-2" data-edge-label="否" data-edge-key="6" data-edge-id="question-edge-1" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="430,119;468,119" d="M 430 119 L 468 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="question-2" data-edge-to="question-3" data-edge-label="否" data-edge-key="7" data-edge-id="question-edge-2" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="640,119;678,119" d="M 640 119 L 678 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+        <path data-edge-from="question-3" data-edge-to="question-4" data-edge-label="否" data-edge-key="8" data-edge-id="question-edge-3" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="850,119;888,119" d="M 850 119 L 888 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
+
+        <!-- Nodes -->
+        <g id="node-question-0" data-node-id="question-0" data-node-label="服务端数据？" aria-label="聚焦服务端数据？，异步事实来源, 依次判断" data-node-kind="backend" data-node-sublabel="异步事实来源" data-node-context="依次判断">
+          <title>服务端数据？ · 异步事实来源 · 依次判断</title>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">服务端数据？</text>
+          <text data-detail="context" x="134" y="124" class="t-muted" font-size="12" text-anchor="middle">异步事实来源</text>
+        </g>
+
+        <g id="node-question-1" data-node-id="question-1" data-node-label="应进入 URL？" aria-label="聚焦应进入 URL？，可分享和后退, 依次判断" data-node-kind="backend" data-node-sublabel="可分享和后退" data-node-context="依次判断">
+          <title>应进入 URL？ · 可分享和后退 · 依次判断</title>
+          <rect x="258" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="258" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="344" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">应进入 URL？</text>
+          <text data-detail="context" x="344" y="124" class="t-muted" font-size="12" text-anchor="middle">可分享和后退</text>
+        </g>
+
+        <g id="node-question-2" data-node-id="question-2" data-node-label="仅组件使用？" aria-label="聚焦仅组件使用？，局部交互, 依次判断" data-node-kind="backend" data-node-sublabel="局部交互" data-node-context="依次判断">
+          <title>仅组件使用？ · 局部交互 · 依次判断</title>
+          <rect x="468" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="468" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="554" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">仅组件使用？</text>
+          <text data-detail="context" x="554" y="124" class="t-muted" font-size="12" text-anchor="middle">局部交互</text>
+        </g>
+
+        <g id="node-question-3" data-node-id="question-3" data-node-label="少量组件共享？" aria-label="聚焦少量组件共享？，存在公共父级, 依次判断" data-node-kind="backend" data-node-sublabel="存在公共父级" data-node-context="依次判断">
+          <title>少量组件共享？ · 存在公共父级 · 依次判断</title>
+          <rect x="678" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="678" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="764" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">少量组件共享？</text>
+          <text data-detail="context" x="764" y="124" class="t-muted" font-size="12" text-anchor="middle">存在公共父级</text>
+        </g>
+
+        <g id="node-question-4" data-node-id="question-4" data-node-label="广泛客户端状态" aria-label="聚焦广泛客户端状态，跨页面业务状态, 依次判断" data-node-kind="backend" data-node-sublabel="跨页面业务状态" data-node-context="依次判断">
+          <title>广泛客户端状态 · 跨页面业务状态 · 依次判断</title>
+          <rect x="888" y="86" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="888" y="86" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="974" y="107" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">广泛客户端状态</text>
+          <text data-detail="context" x="974" y="124" class="t-muted" font-size="12" text-anchor="middle">跨页面业务状态</text>
+        </g>
+
+        <g id="node-owner-0" data-node-id="owner-0" data-node-label="Query" aria-label="聚焦Query，缓存和同步, 对应归属" data-node-kind="backend" data-node-sublabel="缓存和同步" data-node-context="对应归属">
+          <title>Query · 缓存和同步 · 对应归属</title>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="48" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="134" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">Query</text>
+          <text data-detail="context" x="134" y="248" class="t-muted" font-size="12" text-anchor="middle">缓存和同步</text>
+        </g>
+
+        <g id="node-owner-1" data-node-id="owner-1" data-node-label="路由 URL" aria-label="聚焦路由 URL，参数和搜索条件, 对应归属" data-node-kind="backend" data-node-sublabel="参数和搜索条件" data-node-context="对应归属">
+          <title>路由 URL · 参数和搜索条件 · 对应归属</title>
+          <rect x="258" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="258" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="344" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">路由 URL</text>
+          <text data-detail="context" x="344" y="248" class="t-muted" font-size="12" text-anchor="middle">参数和搜索条件</text>
+        </g>
+
+        <g id="node-owner-2" data-node-id="owner-2" data-node-label="组件状态" aria-label="聚焦组件状态，useState 或 ref, 对应归属" data-node-kind="backend" data-node-sublabel="useState 或 ref" data-node-context="对应归属">
+          <title>组件状态 · useState 或 ref · 对应归属</title>
+          <rect x="468" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="468" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="554" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">组件状态</text>
+          <text data-detail="context" x="554" y="248" class="t-muted" font-size="12" text-anchor="middle">useState 或 ref</text>
+        </g>
+
+        <g id="node-owner-3" data-node-id="owner-3" data-node-label="提升或上下文" aria-label="聚焦提升或上下文，父级或 Context, 对应归属" data-node-kind="backend" data-node-sublabel="父级或 Context" data-node-context="对应归属">
+          <title>提升或上下文 · 父级或 Context · 对应归属</title>
+          <rect x="678" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="678" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="764" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">提升或上下文</text>
+          <text data-detail="context" x="764" y="248" class="t-muted" font-size="12" text-anchor="middle">父级或 Context</text>
+        </g>
+
+        <g id="node-owner-4" data-node-id="owner-4" data-node-label="客户端 store" aria-label="聚焦客户端 store，Zustand 或 Pinia, 对应归属" data-node-kind="backend" data-node-sublabel="Zustand 或 Pinia" data-node-context="对应归属">
+          <title>客户端 store · Zustand 或 Pinia · 对应归属</title>
+          <rect x="888" y="210" width="172" height="66" rx="6" class="c-mask"/>
+          <rect x="888" y="210" width="172" height="66" rx="6" class="c-backend" stroke-width="1.5"/>
+          
+          <text data-node-label="" data-detail-anchor="" x="974" y="231" class="t-primary" font-size="15" font-weight="600" text-anchor="middle">客户端 store</text>
+          <text data-detail="context" x="974" y="248" class="t-muted" font-size="12" text-anchor="middle">Zustand 或 Pinia</text>
+        </g>
+
+        <!-- Edge labels -->
+        <g data-detail="context" data-edge-from="question-0" data-edge-to="owner-0" data-edge-label="是" data-edge-key="0" data-edge-id="decision-0">
+          <rect x="19" y="99" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="34" y="109" class="t-edge-emphasis" font-size="12" text-anchor="middle">是</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-1" data-edge-to="owner-1" data-edge-label="是" data-edge-key="1" data-edge-id="decision-1">
+          <rect x="329" y="171" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="344" y="181" class="t-edge-emphasis" font-size="12" text-anchor="middle">是</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-2" data-edge-to="owner-2" data-edge-label="是" data-edge-key="2" data-edge-id="decision-2">
+          <rect x="539" y="171" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="554" y="181" class="t-edge-emphasis" font-size="12" text-anchor="middle">是</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-3" data-edge-to="owner-3" data-edge-label="是" data-edge-key="3" data-edge-id="decision-3">
+          <rect x="749" y="171" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="764" y="181" class="t-edge-emphasis" font-size="12" text-anchor="middle">是</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-4" data-edge-to="owner-4" data-edge-label="归入" data-edge-key="4" data-edge-id="decision-4">
+          <rect x="959" y="171" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="974" y="181" class="t-edge-emphasis" font-size="12" text-anchor="middle">归入</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-0" data-edge-to="question-1" data-edge-label="否" data-edge-key="5" data-edge-id="question-edge-0">
+          <rect x="224" y="99" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="239" y="109" class="t-edge-default" font-size="12" text-anchor="middle">否</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-1" data-edge-to="question-2" data-edge-label="否" data-edge-key="6" data-edge-id="question-edge-1">
+          <rect x="434" y="99" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="449" y="109" class="t-edge-default" font-size="12" text-anchor="middle">否</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-2" data-edge-to="question-3" data-edge-label="否" data-edge-key="7" data-edge-id="question-edge-2">
+          <rect x="644" y="99" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="659" y="109" class="t-edge-default" font-size="12" text-anchor="middle">否</text>
+        </g>
+        <g data-detail="context" data-edge-from="question-3" data-edge-to="question-4" data-edge-label="否" data-edge-key="8" data-edge-id="question-edge-3">
+          <rect x="854" y="99" width="30" height="14" rx="3" class="c-mask"/>
+          <text x="869" y="109" class="t-edge-default" font-size="12" text-anchor="middle">否</text>
+        </g>
+
+        <!-- Legend -->
+        <g data-legend="" data-legend-bridge="">
+          <text x="20" y="304" class="t-primary" font-size="12" font-weight="650">图例</text>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="处理步骤" data-legend-x="20" data-legend-baseline="324" data-legend-width="87">
+            <rect x="20" y="316" width="14" height="9" rx="2" class="c-backend" stroke-width="1"/>
+            <text x="42" y="324" class="t-muted" font-size="11" font-weight="500">处理步骤</text>
+          </g>
+        </g>
+      </svg>

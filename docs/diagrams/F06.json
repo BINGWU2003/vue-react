@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "导航与数据加载",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-vue-react-20261026-085139/F06.html"
+  },
+  "lanes": [
+    {
+      "id": "navigation",
+      "label": "导航主线"
+    },
+    {
+      "id": "states",
+      "label": "加载分支"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "navigation-0",
+      "lane": "navigation",
+      "col": 0,
+      "type": "backend",
+      "label": "发起导航",
+      "sublabel": "链接或历史记录",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "navigation-1",
+      "lane": "navigation",
+      "col": 1,
+      "type": "backend",
+      "label": "匹配与检查",
+      "sublabel": "参数和前置条件",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "navigation-2",
+      "lane": "navigation",
+      "col": 2,
+      "type": "backend",
+      "label": "加载数据",
+      "sublabel": "loader 或页面获取",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "navigation-3",
+      "lane": "navigation",
+      "col": 3,
+      "type": "backend",
+      "label": "完成导航",
+      "sublabel": "呈现匹配页面",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "states-0",
+      "lane": "states",
+      "col": 0,
+      "type": "backend",
+      "label": "展示等待",
+      "sublabel": "导航进行中",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "states-1",
+      "lane": "states",
+      "col": 1,
+      "type": "backend",
+      "label": "错误或重定向",
+      "sublabel": "检查或加载失败",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "states-2",
+      "lane": "states",
+      "col": 2,
+      "type": "backend",
+      "label": "复用 Query",
+      "sublabel": "预取和共享缓存",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    },
+    {
+      "id": "states-3",
+      "lane": "states",
+      "col": 3,
+      "type": "backend",
+      "label": "服务端鉴权",
+      "sublabel": "客户端不能替代",
+      "width": 172,
+      "height": 66,
+      "icon": "none"
+    }
+  ],
+  "edges": [
+    {
+      "id": "navigation-edge-0",
+      "from": "navigation-0",
+      "to": "navigation-1"
+    },
+    {
+      "id": "navigation-edge-1",
+      "from": "navigation-1",
+      "to": "navigation-2"
+    },
+    {
+      "id": "navigation-edge-2",
+      "from": "navigation-2",
+      "to": "navigation-3"
+    },
+    {
+      "id": "states-edge-0",
+      "from": "states-0",
+      "to": "states-1"
+    },
+    {
+      "id": "states-edge-1",
+      "from": "states-1",
+      "to": "states-2"
+    },
+    {
+      "id": "states-edge-2",
+      "from": "states-2",
+      "to": "states-3"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "阅读提示",
+      "items": [
+        "加载阶段可能等待、失败或重定向。loader 决定何时需要数据，Query 负责缓存与同步；服务端独立校验权限。"
+      ]
+    }
+  ]
+}

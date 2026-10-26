@@ -1,0 +1,56 @@
+import { createRoot } from 'react-dom/client'
+import { useState } from 'react'
+import { createBrowserRouter, Link, Navigate, Outlet, useBlocker, useLoaderData, useNavigation, useParams, useRouteError, useSearchParams } from 'react-router'
+import { RouterProvider } from 'react-router/dom'
+import { loadProducts, parsePage, products, type Product } from './data'
+
+function Layout() {
+  const navigation = useNavigation()
+  return <main><h1>商品</h1><Link to="/products">商品列表</Link>
+    {navigation.state !== 'idle' ? <p role="status">导航加载中…</p> : null}<Outlet /></main>
+}
+function ProductList() {
+  const items = useLoaderData() as Product[]
+  const [search, setSearch] = useSearchParams()
+  const page = parsePage(search.get('page'))
+  return <>
+    <label>搜索 <input value={search.get('q') ?? ''} onChange={e => setSearch({ q: e.target.value, page: '1' }, { replace: true })} /></label>
+    <ul>{items.map(p => <li key={p.id}><Link to={`/products/${p.id}`}>{p.name}</Link></li>)}</ul>
+    <button disabled={page === 1} onClick={() => setSearch({ q: search.get('q') ?? '', page: String(page - 1) })}>上一页</button>
+    <button onClick={() => setSearch({ q: search.get('q') ?? '', page: String(page + 1) })}>下一页</button>
+  </>
+}
+function ProductDetail() {
+  const product = useLoaderData() as Product
+  return <section><h2>{product.name}</h2><Link to="edit">编辑</Link><Outlet /></section>
+}
+function EditProduct() {
+  const { id } = useParams()
+  const [dirty, setDirty] = useState(false)
+  const blocker = useBlocker(dirty)
+  return <section><label>编辑商品 {id}<input onChange={() => setDirty(true)} /></label>
+    <button onClick={() => setDirty(false)}>模拟保存</button>
+    {blocker.state === 'blocked' ? <div><p>放弃修改？</p><button onClick={() => blocker.proceed()}>离开</button><button onClick={() => blocker.reset()}>继续编辑</button></div> : null}
+  </section>
+}
+function ErrorPage() {
+  const error = useRouteError()
+  return <p role="alert">页面加载失败：{error instanceof Error ? error.message : '请检查商品编号或网络'}</p>
+}
+const router = createBrowserRouter([
+  { path: '/', element: <Navigate to="/products" replace /> },
+  { path: '/products', element: <Layout />, HydrateFallback: () => <p>首次加载中…</p>, errorElement: <ErrorPage />, children: [
+    { index: true, loader: ({ request }) => {
+      const search = new URL(request.url).searchParams
+      return loadProducts(search.get('q') ?? '', parsePage(search.get('page')), request.signal)
+    }, element: <ProductList /> },
+    { path: ':id', loader: ({ params }) => {
+      const id = Number(params.id)
+      const product = Number.isSafeInteger(id) && products.find(p => p.id === id)
+      if (!product) throw new Response('商品不存在', { status: 404 })
+      return product
+    }, element: <ProductDetail />, children: [{ path: 'edit', element: <EditProduct /> }] },
+  ] },
+  { path: '*', element: <p>404：页面不存在</p> },
+])
+createRoot(document.getElementById('root')!).render(<RouterProvider router={router} />)

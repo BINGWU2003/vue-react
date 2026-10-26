@@ -1,0 +1,192 @@
+{
+  "note": "Gates apply to the original standalone Archify HTML. Embedded SVG editions adapt theme, typography and legend; the site viewer is verified separately by browser tests.",
+  "checks": [
+    {
+      "id": "F01",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "70ab06054bcdf9cc10dfa9118241a51ac82a780b635ffb62220d93496e1eade2",
+      "artifactSha256": "1c71af01552ae2eeea7b5773c9e7c4344849c9bbc80d4a88f4bd70014c5bc3df",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F01.html",
+      "embeddedSvgSha256": "08e1a60a8c49ec2e9ccb83140fe0311c8842d3149d2a76be9dcc7adea9899354",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F02",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "1a4bebdb83da0c2ba97ded8776d22cc501a1177ba0026b83947fc8801d617cc9",
+      "artifactSha256": "1348cf507b001e63cbf3f499c67336687e4c11b0b3baf0479c6bc4b398e597c0",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F02.html",
+      "embeddedSvgSha256": "3184bbeb99f82fbda48bf86fbfc5c729c0eee68c6d5055ec00c4aa1c97632f16",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F03",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "4fd3574bbc7f2c26b01d6aa6367bbd4894b5142d325552e96fac275dcd9b6b39",
+      "artifactSha256": "285ad11403c97adc46efc76a2139674b464b50792cefa3eee127d828f04792a1",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F03.html",
+      "embeddedSvgSha256": "83c1d7edce617ce5a57c3866c78912a258c6f626d846b749f9810bfb161e9978",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F04",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "0054da98d1447e85ea587478718abc2de348e0169acb2bbeba3870dc39a3581b",
+      "artifactSha256": "69b508d2a515dcd70d10107563a5cc246b034f0916b7a01ceb1381efff967fc9",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F04.html",
+      "embeddedSvgSha256": "f171ec190d0a6b8650dbbe884a3d4c3d54d5e9540706f9b83d29ef1825955bb6",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F05",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "71a4f3f46d3ef03aea03b66cd523a7480e93cda1b5339f79fa6ad154ab027d77",
+      "artifactSha256": "a91c5446f0abf82e8af665a50fb530d5bfb4447d234d7dbad63e184944a73e63",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F05.html",
+      "embeddedSvgSha256": "463a5f15efdc5481201a9ce562c0973e8246f63a2e383c05c5ba25670b03c9c7",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F06",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "c89eeaa7cf757f56f497dac3c9af992aa7b3404395f441be999a7a7a39b9444c",
+      "artifactSha256": "c0d4487e36d423356d49776c8bff96ee6c0b5dacf1250399dc8da1bddd680143",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F06.html",
+      "embeddedSvgSha256": "1526fec1259b343596565f02390df335bf07f3e696c837fbccd3a1daec5bc465",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F07",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "7d7d3d4e5db4ee215117ea4d5fb66f77d7466d53f13689adcd5ca156cc7c5f82",
+      "artifactSha256": "73abffcd3eb67f2b940f23550bab66d7dbc59ec9a261ee77a8c894bdcb89457e",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F07.html",
+      "embeddedSvgSha256": "01201a566f38b1aee57b90d8ffff6adbb33e776751c86171770e00e1076d85fe",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F08",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "a5d49ad79b78b50d174d39aa2c90e5952ed385fc10a910b702faeceefbcfddd2",
+      "artifactSha256": "e1da07a40ac5b5abdff68dde06e8ffd4cc625dc6c56308cef755d11ffdd2ddd5",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F08.html",
+      "embeddedSvgSha256": "349eb015ebfdd284b0bb2576a74821ff5dbae422a6d58b5da0bfd681684a908d",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F09",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "3f967422ea456d1026bf1f10d4379ffef96f666b347415bae3f16a6588ad7c39",
+      "artifactSha256": "550bcbdde1a790155fbb14f438bc89c3dcce447a167c293c50edd787d19fb4df",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F09.html",
+      "embeddedSvgSha256": "08b32aed9a6fc0de76e6f1cd789d6bfe635873ecf066ae898ae04c2d8dc31d57",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F10",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "cf4e9ed485f224f595e0bc215719cd04fce5a1aca1def18247d6c80463b99c27",
+      "artifactSha256": "a7c8371d17f106d9917c2f211a0b4f8a2b021af77eeebe7b62ee0137fc321d01",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F10.html",
+      "embeddedSvgSha256": "af4711f5ebf6d885187817d29b32f9e36480e75bc5d30361bb0b2a5a1e216e81",
+      "visualReview": "not-requested"
+    },
+    {
+      "id": "F11",
+      "diagramType": "workflow",
+      "quality": "showcase",
+      "status": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "specificationSha256": "92db4192d8a43f8c725edbecbdf69c9abe58086d8d7dde242a3dcce98862402d",
+      "artifactSha256": "1b8933622f4609e3fe5c91cd04df10d5078d7ddc5153363757d42cd581bbba3b",
+      "artifactPath": "D:\\files\\hjc-code\\vue-react\\.archify\\workflow-vue-react-20261026-085139\\F11.html",
+      "embeddedSvgSha256": "c97614711753a952cb7ccd4beb0d59c8a3db5b7c918ceca2c1b337078f8fdb2f",
+      "visualReview": "not-requested"
+    }
+  ]
+}

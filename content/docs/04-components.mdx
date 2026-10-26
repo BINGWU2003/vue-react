@@ -1,0 +1,128 @@
+---
+title: 04 · 组件设计与通信
+description: 用可控搜索框、内容组合、跨层主题与聚焦操作，建立清晰的组件接口。
+---
+
+## 实际需求与数据所有权
+
+搜索框负责输入体验，父级持有关键词和筛选结果；列表允许调用方决定条目内容；主题跨层传递；父级偶尔要求输入框聚焦。先区分四种接口：**值、通知、内容、命令**。
+
+<Diagram id="F04" />
+
+props 表达输入。Vue props 是浅只读约定，React 也要求把 props 当作不可变快照；这并不意味着嵌套对象被自动深冻结。子组件修改嵌套数据会让所有权难以追踪，应通知拥有者完成更新。
+
+## 可控输入与命令式聚焦
+
+<CodeBlockTabs groupId="framework" defaultValue="react">
+<CodeBlockTabsList><CodeBlockTabsTrigger value="vue">Vue</CodeBlockTabsTrigger><CodeBlockTabsTrigger value="react">React</CodeBlockTabsTrigger></CodeBlockTabsList>
+<CodeBlockTab value="vue">
+
+```vue title="SearchInput.vue · Vue 3.4+"
+<script setup lang="ts">
+import { ref } from 'vue'
+const model = defineModel<string>({ required: true })
+const input = ref<HTMLInputElement | null>(null)
+defineExpose({ focus: () => input.value?.focus() })
+</script>
+<template><label>商品搜索 <input ref="input" v-model="model" /></label></template>
+```
+
+```vue title="App.vue"
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import SearchInput from './SearchInput.vue'
+const search = ref('')
+const input = ref<InstanceType<typeof SearchInput> | null>(null)
+const shown = computed(() => ['笔记本', '钢笔', '背包'].filter(name => name.includes(search.value)))
+</script>
+<template>
+  <SearchInput ref="input" v-model="search" />
+  <button @click="input?.focus()">父组件聚焦</button>
+  <ul><li v-for="name in shown" :key="name">{{ name }}</li></ul>
+</template>
+```
+
+</CodeBlockTab>
+<CodeBlockTab value="react">
+
+```tsx title="communication.tsx · 导入"
+import { createContext, useContext, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from 'react'
+```
+
+<include lang="tsx" meta='title="communication.tsx · 实际演示源码"'>../../components/examples/communication.tsx#communication</include>
+
+</CodeBlockTab>
+</CodeBlockTabs>
+
+<Demo id="E07" title="可控搜索、内容组合与聚焦">输入关键词，观察父级值与列表一起变化；点击父组件聚焦，焦点回到输入框。切换局部主题，嵌套消费者读取同一 Context。</Demo>
+
+defineModel 可理解为 modelValue prop 与 update:modelValue 通知的组合；传统写法用 defineProps/defineEmits。React 没有固定 v-model 语法，用 value/onChange 或业务名表达同一所有权。
+
+```vue title="Vue：显式值与通知"
+<script setup lang="ts">
+defineProps<{ value: string }>()
+const emit = defineEmits<{ change: [value: string] }>()
+</script>
+<template><input :value="value" @input="emit('change', ($event.target as HTMLInputElement).value)" /></template>
+```
+
+React 19 函数组件可直接接收 ref prop；历史 React 18 代码通常用 forwardRef。useImperativeHandle 只暴露 focus 等必要方法，避免父级随意修改内部 DOM。不要用 ref 替代本可由 props 表达的数据同步。
+
+## 默认、具名和作用域内容
+
+| Vue | React 常用接口 | 作用 |
+| --- | --- | --- |
+| 默认插槽 | children | 传入一段内容 |
+| 具名插槽 | header、footer 等内容 props | 为多个区域传入内容 |
+| 作用域插槽 | renderItem 等函数 props | 子组件把数据交给调用方决定显示 |
+
+```vue title="ContentList.vue"
+<script setup lang="ts">
+defineProps<{ items: string[] }>()
+</script>
+<template>
+  <header><slot name="header" /></header>
+  <ul><li v-for="item in items" :key="item"><slot :item="item" /></li></ul>
+</template>
+```
+
+```vue title="调用方式"
+<ContentList :items="['笔记本', '钢笔']">
+  <template #header><h2>商品</h2></template>
+  <template #default="{ item }"><strong>→ {{ item }}</strong></template>
+</ContentList>
+```
+
+React ContentList 的 renderItem 已在 E07 展示。具名区域可以采用 `{ header: ReactNode; children: ReactNode }`，返回 `<section>{header}{children}</section>`。没有必要把每个插槽概念都封装成相同名字的 API。
+
+## 跨层传递与状态提升
+
+```vue title="Vue：主题提供者（后代在自己的组件中 inject）"
+<script setup lang="ts">
+import { provide, ref } from 'vue'
+const theme = ref('浅色')
+provide('theme', theme)
+</script>
+<template><button @click="theme = theme === '浅色' ? '深色' : '浅色'">切换</button><slot /></template>
+```
+
+```vue title="ThemeBadge.vue"
+<script setup lang="ts">
+import { inject, type Ref } from 'vue'
+const theme = inject<Ref<string>>('theme')
+</script>
+<template><p>{{ theme ?? '浅色' }}主题</p></template>
+```
+
+provide 一个 ref 后，消费者读取其响应式值；提供普通静态字符串不会自动变成响应式。大型项目可用带类型的 InjectionKey 避免字符串冲突。
+
+Context 传递 value，value 按 Object.is 改变时，消费该 Context 的组件会收到更新，memo 不能单独挡住它。把每次新建的大对象塞进一个 Context 会扩大更新范围，可拆分上下文或使用具备 selector 的外部 store，见 [第 07 章](/docs/07-stores)。Context 自己不是一个完整的全局状态管理策略。
+
+两个子组件需要同步时，先把状态提升到最近公共父级，只保存一份，再向下传值与操作。不要让两个子组件各保存一份关键词，再用监听互相追赶。
+
+## 使用建议与参考
+
+默认声明式地传值和通知；内容组合保留调用方控制显示的空间；仅为聚焦、滚动等能力开放命令。跨层共享还需要明确所有者和生命周期。
+
+- [Vue：组件 v-model](https://cn.vuejs.org/guide/components/v-model.html)、[插槽](https://cn.vuejs.org/guide/components/slots.html)、[依赖注入](https://cn.vuejs.org/guide/components/provide-inject.html)
+- [React：状态提升](https://react.dev/learn/sharing-state-between-components)、[Context](https://react.dev/learn/passing-data-deeply-with-context)、[useImperativeHandle](https://react.dev/reference/react/useImperativeHandle)
